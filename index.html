@@ -4,10 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCGF Total-Agent | 센터장 종합 상황실</title>
+    <title>Total-Agent | 센터 종합 상황실</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0f172a',
+                        accent: '#2563eb',
+                        muted: '#64748b',
+                        surface: '#f8fafc',
+                        border: '#e2e8f0',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -16,22 +34,26 @@
             word-break: keep-all;
         }
 
+        .row-hover:hover {
+            background-color: #f1f5f9;
+        }
+
         .doc-viewer h1 {
-            font-size: 1.2rem;
+            font-size: 1.35rem;
             font-weight: 800;
             color: #0f172a;
             border-bottom: 2px solid #0f172a;
-            padding-bottom: 8px;
-            margin-bottom: 14px;
+            padding-bottom: 10px;
+            margin-bottom: 18px;
         }
 
         .doc-viewer h2 {
-            font-size: 0.98rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: #1e3a8a;
-            margin-top: 16px;
-            margin-bottom: 8px;
-            padding: 5px 10px;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            padding: 6px 12px;
             background: #eff6ff;
             border-left: 4px solid #2563eb;
             border-radius: 4px;
@@ -39,22 +61,22 @@
 
         .doc-viewer p,
         .doc-viewer li {
-            font-size: 0.85rem;
-            line-height: 1.65;
+            font-size: 0.95rem;
+            line-height: 1.75;
             color: #1e293b;
         }
 
         .doc-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
-            font-size: 0.8rem;
+            margin: 14px 0;
+            font-size: 0.9rem;
         }
 
         .doc-table th {
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
-            padding: 7px 10px;
+            padding: 10px 12px;
             font-weight: 700;
             text-align: left;
             color: #0f172a;
@@ -62,826 +84,653 @@
 
         .doc-table td {
             border: 1px solid #cbd5e1;
-            padding: 7px 10px;
+            padding: 10px 12px;
             vertical-align: top;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         @media print {
+            body > *:not(#taskDetailModal) {
+                display: none !important;
+            }
+
             body {
-                background: #fff;
+                background: #fff !important;
+            }
+
+            #taskDetailModal {
+                display: block !important;
+                position: static !important;
+                background: #fff !important;
+                padding: 0 !important;
+            }
+
+            #taskDetailModal .modal-box {
+                box-shadow: none !important;
+                border: none !important;
+                max-width: 100% !important;
+                max-height: none !important;
             }
 
             .no-print {
                 display: none !important;
             }
-
-            .print-only-box {
-                box-shadow: none !important;
-                border: none !important;
-                max-height: none !important;
-                overflow: visible !important;
-                padding: 0 !important;
-            }
         }
     </style>
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen">
 
-    <!-- ═══════════ TOP HEADER & 3 MAIN NAVIGATION TABS ═══════════ -->
-    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 no-print">
-        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-5">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-sm">T</div>
-                    <div>
-                        <span class="font-extrabold text-sm tracking-tight">SCGF Total-Agent</span>
-                        <span class="hidden sm:inline-block ml-1.5 text-[11px] text-slate-400">센터 멀티 에이전트 상황실</span>
+    <!-- ═══════════ 상단 헤더 (뉴스비서 스타일 화이트 클린 헤더) ═══════════ -->
+    <header class="bg-white border-b border-border sticky top-0 z-40 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-accent rounded-xl flex items-center justify-center">
+                        <span class="text-white text-base font-extrabold">T</span>
                     </div>
+                    <h1 class="text-lg font-extrabold tracking-tight">Total-Agent</h1>
                 </div>
 
-                <!-- 3대 핵심 뷰 탭 -->
-                <nav class="flex items-center gap-1 bg-slate-800/90 p-1 rounded-xl border border-slate-700/80">
+                <!-- 3대 메인 탭 (간결한 명칭) -->
+                <nav class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
                     <button id="navTab-dashboard" onclick="switchMainView('dashboard')"
-                        class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all bg-blue-600 text-white">
-                        📊 종합 현황판
+                        class="px-4 py-1.5 rounded-lg text-sm font-bold transition-all bg-white text-accent shadow-sm">
+                        현황판
                     </button>
                     <button id="navTab-rooms" onclick="switchMainView('rooms')"
-                        class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all text-slate-300 hover:text-white">
-                        🏢 팀별 집무실·개별설정
+                        class="px-4 py-1.5 rounded-lg text-sm font-bold transition-all text-slate-600 hover:text-slate-900">
+                        팀 집무실
                     </button>
                     <button id="navTab-archive" onclick="switchMainView('archive')"
-                        class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all text-slate-300 hover:text-white">
-                        🗂️ 과제 히스토리·단계별 상세
+                        class="px-4 py-1.5 rounded-lg text-sm font-bold transition-all text-slate-600 hover:text-slate-900">
+                        히스토리
                     </button>
                 </nav>
             </div>
 
-            <!-- 우측: 데이터 연동 상태 & 글로벌 API 키 -->
             <div class="flex items-center gap-2">
-                <span id="headerRepoStatus"
-                    class="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-[11px] font-semibold text-emerald-400">
-                    ● 뉴스비서·미팅코파일럿 Read-Only 연결됨
-                </span>
                 <button onclick="openGlobalKeyModal()"
-                    class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200">
-                    🔑 공통 API 키
+                    class="w-9 h-9 flex items-center justify-center text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
+                    title="공통 API 설정">
+                    ⚙️
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- ═══════════ MAIN CONTAINER ═══════════ -->
-    <main class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-5 flex-1">
+    <!-- ═══════════ 메인 컨테이너 (1단 Full-Width 구성) ═══════════ -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
 
         <!-- ===================================================================== -->
-        <!-- [VIEW 1] 📊 종합 현황판 (상단 요약 카드 + 좌측 동적 지시/과제 테이블 + 우측 진행결과·맞춤 산출물) -->
+        <!-- [탭 1] 현황판 (1단 구성: 상단 요약·팀 카드 + 지시 입력바 + 전체폭 과제 테이블) -->
         <!-- ===================================================================== -->
         <div id="view-dashboard" class="space-y-5">
 
-            <!-- 1-A. 상단 요약 카드: [좌] 작업·결재 현황 / [우] 비서실장 + 5대 팀 실시간 상태 (클릭 시 팀 설정방 이동) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 no-print">
-
-                <!-- 좌측(4칼럼): 결재 대기 & 작업 현황 -->
-                <div class="lg:col-span-4 bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-extrabold text-slate-700">📌 센터장 결재·작업 현황</span>
-                        <span id="pendingAlertBadge"
-                            class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-100 text-amber-800">
-                            결재 대기 2건
-                        </span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2 text-center my-1">
-                        <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
-                            <div class="text-[11px] text-slate-500 font-semibold">누적 지시 과제</div>
-                            <div id="kpiTotalTasks" class="text-xl font-black text-slate-900 mt-0.5">4건</div>
-                        </div>
-                        <div class="p-2.5 rounded-lg bg-amber-50/70 border border-amber-200/70">
-                            <div class="text-[11px] text-amber-800 font-bold">보고·결재 대기</div>
-                            <div id="kpiPendingTasks" class="text-xl font-black text-amber-600 mt-0.5">2건</div>
-                        </div>
-                        <div class="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/70">
-                            <div class="text-[11px] text-emerald-800 font-bold">결재 완료</div>
-                            <div id="kpiApprovedTasks" class="text-xl font-black text-emerald-600 mt-0.5">2건</div>
-                        </div>
-                    </div>
-                    <div class="text-[11px] text-slate-500 mt-2 flex items-center justify-between">
-                        <span>비서실장 동적 팀 배치 · 맞춤형 산출물 가동중</span>
-                        <button onclick="filterPendingOnly()" class="text-blue-600 font-bold hover:underline">결재대기만 보기 ➔</button>
-                    </div>
+            <!-- 상단 요약 & 팀 현황 카드 -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-3">
+                <!-- 작업 카운트 3개 -->
+                <div onclick="setTaskFilter('all')" class="bg-white rounded-xl p-3.5 border border-border shadow-sm cursor-pointer hover:border-blue-400 transition-all">
+                    <div class="text-xs font-bold text-muted">전체 과제</div>
+                    <div id="statTotalTasks" class="text-2xl font-extrabold text-primary mt-1">4</div>
+                </div>
+                <div onclick="setTaskFilter('pending')" class="bg-amber-50/70 rounded-xl p-3.5 border border-amber-200 shadow-sm cursor-pointer hover:border-amber-400 transition-all">
+                    <div class="text-xs font-bold text-amber-800">결재 대기</div>
+                    <div id="statPendingTasks" class="text-2xl font-extrabold text-amber-600 mt-1">2</div>
+                </div>
+                <div onclick="setTaskFilter('approved')" class="bg-emerald-50/70 rounded-xl p-3.5 border border-emerald-200 shadow-sm cursor-pointer hover:border-emerald-400 transition-all">
+                    <div class="text-xs font-bold text-emerald-800">결재 완료</div>
+                    <div id="statApprovedTasks" class="text-2xl font-extrabold text-emerald-600 mt-1">2</div>
                 </div>
 
-                <!-- 우측(8칼럼): 비서실장 + 5대 팀 현황 카드 (클릭 시 해당 팀 집무실·설정으로 이동) -->
-                <div class="lg:col-span-8 bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-extrabold text-slate-700">🏢 에이전트 팀별 현황 및 설정 바로가기 <span class="font-normal text-slate-400">(카드를 클릭하면 해당 팀의 지침·API·데이터셋을 설정합니다)</span></span>
-                        <button onclick="switchMainView('rooms')" class="text-xs font-bold text-blue-600 hover:underline">팀별 집무실 열기 ➔</button>
-                    </div>
-                    <div id="topTeamCardsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-                        <!-- JS에서 각 팀의 현재 설정된 모델·데이터셋 수와 함께 동적 렌더링 -->
-                    </div>
+                <!-- 6개 팀 상태 카드 (클릭 시 해당 팀 집무실로 이동) -->
+                <div id="topTeamCards" class="col-span-2 sm:col-span-4 lg:col-span-6 grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    <!-- JS 렌더링 -->
                 </div>
             </div>
 
-            <!-- 1-B. 메인 워크스페이스: [좌측] 비서실장 동적 과업 하달 + 과제 테이블 / [우측] 선택 과제 진행 결과 & 맞춤 산출물 -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            <!-- 새 과업 지시 바 -->
+            <div class="bg-white rounded-xl border border-border p-3.5 shadow-sm flex flex-col sm:flex-row gap-2.5">
+                <input id="newTaskInput" type="text"
+                    placeholder="새 과업 주제를 입력하세요..."
+                    class="flex-1 px-4 py-2.5 rounded-xl border border-border text-sm font-medium focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-slate-50/60 focus:bg-white"
+                    onkeydown="if(event.key==='Enter') openRoutingModal()" />
+                <button onclick="openRoutingModal()"
+                    class="px-5 py-2.5 bg-accent hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition-colors whitespace-nowrap">
+                    + 과업 지시
+                </button>
+            </div>
 
-                <!-- 좌측(6칼럼): 비서실장 동적 라우팅 지시창 + 누적 과제 테이블 -->
-                <div class="lg:col-span-6 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden no-print">
-
-                    <!-- 과업 하달 & 비서실장 동적 프로세스 설계 영역 -->
-                    <div class="p-4 bg-slate-50 border-b border-slate-200 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
-                                👑 새 과업 하달 <span class="text-blue-600 font-bold">(비서실장이 주제에 맞춰 참여 팀·순서·산출물을 동적 설계합니다)</span>
-                            </label>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <input id="newTaskInput" type="text"
-                                placeholder="어느 주제든 던져보세요 (예: 시의회 대위변제율 감사 방어 Q&A 작성 / 창구 모바일 서류 간소화 / 외식업 특례보증 기획)"
-                                class="flex-1 px-3.5 py-2 rounded-lg border border-slate-300 text-xs font-semibold focus:border-blue-600 outline-none bg-white"
-                                onkeydown="if(event.key==='Enter') previewChiefRouting()" />
-                            <button onclick="previewChiefRouting()"
-                                class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-lg whitespace-nowrap transition-colors">
-                                🎯 비서실장 프로세스 설계
-                            </button>
-                        </div>
-
-                        <!-- 빠른 예시 버튼 (유형별로 전혀 다른 팀 배치와 산출물이 나오는 것을 즉시 확인) -->
-                        <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
-                            <span class="text-slate-400 font-bold">주제별 동적 편성 예시:</span>
-                            <button onclick="fillExampleTopic('시의회 행정사무감사 대위변제율 급증 지적에 대한 방어 논리 및 Q&A 작성')"
-                                class="px-2 py-0.5 rounded bg-white border border-slate-200 hover:border-indigo-400 text-slate-600 font-semibold">
-                                🛡️ 감사방어 (리서치→감사→운영)
-                            </button>
-                            <button onclick="fillExampleTopic('지점 창구 심사 대기시간 단축을 위한 모바일 마이데이터 서류 간소화 방안')"
-                                class="px-2 py-0.5 rounded bg-white border border-slate-200 hover:border-indigo-400 text-slate-600 font-semibold">
-                                ⚙️ 창구개선 (리서치→운영→감사→미디어)
-                            </button>
-                            <button onclick="fillExampleTopic('최근 자영업자 다중채무 연체율 및 배달플랫폼 수수료 언론 동향 브리핑')"
-                                class="px-2 py-0.5 rounded bg-white border border-slate-200 hover:border-indigo-400 text-slate-600 font-semibold">
-                                📰 신속브리핑 (리서치→미디어)
-                            </button>
-                            <button onclick="fillExampleTopic('고금리 취약 골목상권 자생력 강화 컨설팅 결합 특례보증 신상품 기획')"
-                                class="px-2 py-0.5 rounded bg-white border border-slate-200 hover:border-indigo-400 text-slate-600 font-semibold">
-                                💡 신사업기획 (전팀 풀가동)
-                            </button>
-                        </div>
-
-                        <!-- 비서실장 동적 프로세스 & 산출물 설계 브리핑 박스 (주제 입력 시 오픈, 수정 후 실행 가능) -->
-                        <div id="routingPreviewBox" class="hidden p-3.5 rounded-xl bg-indigo-50/80 border border-indigo-200 space-y-3 text-xs">
-                            <div class="flex items-center justify-between">
-                                <span class="font-extrabold text-indigo-950 flex items-center gap-1.5">
-                                    🎯 [비서실장 동적 설계안] 주제 성격 및 각 팀 지침을 분석한 맞춤형 프로세스
-                                </span>
-                                <span id="routingCategoryBadge" class="px-2 py-0.5 rounded bg-indigo-600 text-white text-[10px] font-extrabold">
-                                    유형 판별
-                                </span>
-                            </div>
-
-                            <p id="routingReasonText" class="text-[11px] text-indigo-900 leading-relaxed"></p>
-
-                            <!-- 참여 팀 및 순서 조정 (체크박스) -->
-                            <div class="bg-white p-2.5 rounded-lg border border-indigo-100">
-                                <div class="text-[11px] font-extrabold text-slate-700 mb-1.5">1. 투입할 팀 및 실행 순서 (클릭하여 추가/제외 가능):</div>
-                                <div id="routingTeamCheckboxes" class="flex flex-wrap items-center gap-1.5"></div>
-                                <div id="routingPipelinePreview" class="text-[11px] font-bold text-indigo-700 mt-2 pt-1.5 border-t border-slate-100"></div>
-                            </div>
-
-                            <!-- 필요 산출물 선정 (체크박스) -->
-                            <div class="bg-white p-2.5 rounded-lg border border-indigo-100">
-                                <div class="text-[11px] font-extrabold text-slate-700 mb-1.5">2. 이 과제에 필요한 맞춤형 산출물 (클릭하여 선택/변경 가능):</div>
-                                <div id="routingDeliverableCheckboxes" class="flex flex-wrap items-center gap-2"></div>
-                            </div>
-
-                            <div class="flex justify-end gap-2">
-                                <button onclick="closeRoutingPreview()"
-                                    class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-600 font-bold text-xs">
-                                    취소
-                                </button>
-                                <button id="executeRoutedTaskBtn" onclick="executeRoutedTask()"
-                                    class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-sm">
-                                    🚀 위 프로세스대로 팀 가동 및 산출물 생성
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 과제 목록 필터 바 -->
-                    <div class="px-4 py-2.5 border-b border-slate-100 flex items-center justify-between">
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-xs font-extrabold text-slate-800">📋 지시 과제 현황 테이블</span>
-                            <button onclick="setTaskTableFilter('all')" id="filterBtn-all"
-                                class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-900 text-white">전체</button>
-                            <button onclick="setTaskTableFilter('pending')" id="filterBtn-pending"
-                                class="px-2 py-0.5 rounded text-[11px] font-bold text-slate-600 hover:bg-slate-100">결재대기</button>
-                            <button onclick="setTaskTableFilter('approved')" id="filterBtn-approved"
-                                class="px-2 py-0.5 rounded text-[11px] font-bold text-slate-600 hover:bg-slate-100">결재완료</button>
-                        </div>
-                        <span class="text-[11px] text-slate-400">과제마다 비서실장이 편성한 팀과 산출물이 다릅니다</span>
-                    </div>
-
-                    <!-- 과제 테이블 -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-extrabold text-slate-600">
-                                    <th class="py-2.5 px-3 w-16">번호</th>
-                                    <th class="py-2.5 px-3">지시 과업 및 비서실장 편성 프로세스</th>
-                                    <th class="py-2.5 px-3 w-24 text-center">맞춤 산출물</th>
-                                    <th class="py-2.5 px-3 w-20 text-center">상태</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dashboardTaskTableBody" class="divide-y divide-slate-100 text-xs">
-                                <!-- JS 렌더링 -->
-                            </tbody>
-                        </table>
+            <!-- 1단 전체 폭 지시 과제 테이블 -->
+            <div class="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                <!-- 필터 바 -->
+                <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <button onclick="setTaskFilter('all')" id="filterChip-all"
+                            class="px-3 py-1 rounded-lg text-xs font-bold bg-accent text-white">전체</button>
+                        <button onclick="setTaskFilter('pending')" id="filterChip-pending"
+                            class="px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100">결재대기</button>
+                        <button onclick="setTaskFilter('approved')" id="filterChip-approved"
+                            class="px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100">결재완료</button>
                     </div>
                 </div>
 
-                <!-- 우측(6칼럼): 선택된 과제의 맞춤형 프로세스 진행 결과 & 산출물 확인 -->
-                <div class="lg:col-span-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
-
-                    <!-- 선택 과제 헤더 & 결재 승인 버튼 -->
-                    <div class="p-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 no-print">
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-2">
-                                <span id="selectedTaskIdBadge" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-extrabold text-[11px]">#2026-04</span>
-                                <span id="selectedTaskCategoryBadge" class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-extrabold text-[11px]">신사업 종합기획</span>
-                                <span id="selectedTaskStatusBadge" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-100 text-amber-800">결재 대기중</span>
-                                <span id="selectedTaskDate" class="text-[11px] text-slate-400">2026-10-30</span>
-                            </div>
-                            <h2 id="selectedTaskTitle" class="text-sm font-extrabold text-slate-900 mt-1 truncate"></h2>
-                        </div>
-
-                        <div class="flex items-center gap-1.5 shrink-0">
-                            <button id="approveTaskBtn" onclick="approveCurrentTask()"
-                                class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition-colors">
-                                ✅ 결재 승인
-                            </button>
-                            <button onclick="openTaskStepDetail(selectedTaskId)"
-                                class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors">
-                                🔍 단계별 상세
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 비서실장이 이 과제에 배치한 팀 순서(Pipeline) 및 핵심 결과 요약 -->
-                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 text-xs space-y-2 no-print">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <div class="flex items-center gap-1.5">
-                                <span class="font-extrabold text-slate-700">🎯 가동 프로세스:</span>
-                                <div id="selectedTaskPipelineChips" class="flex flex-wrap items-center gap-1"></div>
-                            </div>
-                            <span id="selectedTaskScore" class="font-extrabold text-emerald-700 text-[11px]"></span>
-                        </div>
-                        <div id="selectedTaskSummaryLines" class="text-slate-600 space-y-1 text-[11px] leading-relaxed pt-1 border-t border-slate-200/70"></div>
-                    </div>
-
-                    <!-- 비서실장이 이 과제에 지정한 맞춤형 산출물 탭 바 (과제마다 탭 종류와 개수가 동적으로 달라짐!) -->
-                    <div class="px-4 py-2 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 no-print">
-                        <div id="dynamicDocSubTabs" class="flex flex-wrap gap-1">
-                            <!-- JS 동적 렌더링 -->
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <button onclick="copyDocContent()" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold">복사</button>
-                            <button onclick="window.print()" class="px-2.5 py-1 rounded bg-slate-900 text-white text-[11px] font-bold">인쇄</button>
-                        </div>
-                    </div>
-
-                    <!-- 산출물 본문 뷰어 -->
-                    <div id="dashboardDocViewer"
-                        class="p-5 doc-viewer print-only-box overflow-y-auto max-h-[540px]">
-                    </div>
+                <!-- 테이블 -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-border text-xs font-bold text-muted uppercase bg-slate-50/60">
+                                <th class="py-3.5 px-5 w-28">상태</th>
+                                <th class="py-3.5 px-4 w-32">일자</th>
+                                <th class="py-3.5 px-4">지시 과업</th>
+                                <th class="py-3.5 px-5 w-72">산출물</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboardTableBody" class="divide-y divide-border text-sm">
+                            <!-- JS 렌더링 -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
         <!-- ===================================================================== -->
-        <!-- [VIEW 2] 🏢 팀별 집무실 & 팀별 전용 설정창 (역할·업무지침 수정 / API·모델 지정 / 참고 데이터셋 선택·추가) -->
+        <!-- [탭 2] 팀 집무실 (1단 구성: 상단 팀 선택 헤더 + 우측 [⚙️ 팀 설정] 버튼 + 1단 작업 테이블) -->
         <!-- ===================================================================== -->
-        <div id="view-rooms" class="hidden space-y-5 no-print">
+        <div id="view-rooms" class="hidden space-y-5">
 
-            <!-- 상단 6개 방 선택 탭 -->
-            <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-2">
+            <!-- 상단 팀 선택 & 설정 버튼 바 -->
+            <div class="bg-white rounded-xl p-4 border border-border shadow-sm flex flex-wrap items-center justify-between gap-3">
                 <div class="flex flex-wrap gap-1.5">
-                    <button onclick="selectRoom('secretary')" id="roomTab-secretary"
-                        class="px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all">
-                        🎯 비서실장실 (총괄 라우터)
-                    </button>
-                    <button onclick="selectRoom('research')" id="roomTab-research"
-                        class="px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all">
-                        🔍 리서치팀 방
-                    </button>
-                    <button onclick="selectRoom('planning')" id="roomTab-planning"
-                        class="px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all">
-                        💡 기획팀 방
-                    </button>
-                    <button onclick="selectRoom('audit')" id="roomTab-audit"
-                        class="px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all">
-                        🛡️ 감사팀 방
-                    </button>
-                    <button onclick="selectRoom('operations')" id="roomTab-operations"
-                        class="px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all">
-                        ⚙️ 운영팀 방
-                    </button>
-                    <button onclick="selectRoom('media')" id="roomTab-media"
-                        class="px-3.5 py-2 rounded-lg text-xs font-extrabold transition-all">
-                        📑 미디어팀 방
-                    </button>
+                    <button onclick="selectRoom('secretary')" id="roomBtn-secretary" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">비서실장</button>
+                    <button onclick="selectRoom('research')" id="roomBtn-research" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">리서치팀</button>
+                    <button onclick="selectRoom('planning')" id="roomBtn-planning" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">기획팀</button>
+                    <button onclick="selectRoom('audit')" id="roomBtn-audit" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">감사팀</button>
+                    <button onclick="selectRoom('operations')" id="roomBtn-operations" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">운영팀</button>
+                    <button onclick="selectRoom('media')" id="roomBtn-media" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">미디어팀</button>
                 </div>
-                <span class="text-xs text-slate-500 font-semibold px-2">각 방에서 수정한 지침·API·데이터셋은 비서실장의 프로세스 편성에 즉시 반영됩니다</span>
+
+                <button onclick="openTeamSettingsModal()"
+                    class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold flex items-center gap-2 transition-colors">
+                    <span>⚙️ 지침 · API · 데이터셋 설정</span>
+                </button>
             </div>
 
-            <!-- 선택된 팀 방 내부: [좌측 6칼럼] 팀 전용 설정창 (지침 편집 + API/모델 + 데이터셋 선택) / [우측 6칼럼] 이 팀의 과제별 작업 내역 및 산출물 -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-
-                <!-- 좌측(6칼럼): 팀별 전용 설정 패널 (1. API·모델 설정 / 2. 참고 데이터셋 ON·OFF 및 추가 / 3. 역할·업무지침 직접 수정) -->
-                <div class="lg:col-span-6 space-y-4">
-
-                    <!-- 카드 1: 팀 기본 정보 & 연결할 API / LLM 모델 설정 -->
-                    <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                            <div>
-                                <span id="roomRoleTag" class="text-[11px] font-extrabold text-blue-600 uppercase"></span>
-                                <h2 id="roomTitle" class="text-lg font-black text-slate-900 mt-0.5"></h2>
-                            </div>
-                            <button onclick="saveCurrentRoomConfig()"
-                                class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow-sm transition-colors">
-                                💾 이 팀의 설정·지침 저장
-                            </button>
-                        </div>
-
-                        <!-- 팀 전용 API 공급자 & 모델 선택 -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                            <div>
-                                <label class="block font-extrabold text-slate-700 mb-1">🔌 연결 API 공급자</label>
-                                <select id="roomApiProviderSelect"
-                                    class="w-full px-2.5 py-2 rounded-lg border border-slate-300 font-bold text-slate-800 bg-slate-50 outline-none focus:border-blue-600">
-                                    <option value="Google Gemini API">Google Gemini API</option>
-                                    <option value="Anthropic Claude API">Anthropic Claude API</option>
-                                    <option value="OpenAI / OpenRouter">OpenAI / OpenRouter</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block font-extrabold text-slate-700 mb-1">🧠 배정 AI 모델</label>
-                                <select id="roomModelSelect"
-                                    class="w-full px-2.5 py-2 rounded-lg border border-slate-300 font-bold text-slate-800 bg-slate-50 outline-none focus:border-blue-600">
-                                    <option value="gemini-4-argon (최상위 추론)">gemini-4-argon (최상위 추론)</option>
-                                    <option value="claude-opus-5.5 (고밀도 문서·전략)">claude-opus-5.5 (고밀도 문서·전략)</option>
-                                    <option value="gpt-6-astra (레드팀·감사 특화)">gpt-6-astra (레드팀·감사 특화)</option>
-                                    <option value="gemini-3.5-flash (고속 기획·조율)">gemini-3.5-flash (고속 기획·조율)</option>
-                                    <option value="gemini-2.5-flash (초고속 데이터 스캔)">gemini-2.5-flash (초고속 데이터 스캔)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block font-extrabold text-slate-700 mb-1">🎚️ 성향 (Temperature)</label>
-                                <select id="roomTempSelect"
-                                    class="w-full px-2.5 py-2 rounded-lg border border-slate-300 font-bold text-slate-800 bg-slate-50 outline-none focus:border-blue-600">
-                                    <option value="0.1 (엄격·팩트 중심)">0.1 (엄격·팩트 중심)</option>
-                                    <option value="0.3 (균형·표준 행정)">0.3 (균형·표준 행정)</option>
-                                    <option value="0.6 (창의·공격적 기획)">0.6 (창의·공격적 기획)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-extrabold text-slate-700 mb-1">🔑 이 팀 전용 개별 API Key (비워두면 상단 공통 API 키 사용)</label>
-                            <input id="roomCustomApiKey" type="password" placeholder="이 팀에만 별도 API 키를 연결하려면 입력하세요 (선택)"
-                                class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs outline-none focus:border-blue-600" />
-                        </div>
+            <!-- 현재 팀 요약 헤더 카드 (1단) -->
+            <div class="bg-white rounded-xl p-5 border border-border shadow-sm space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <h2 id="roomHeaderName" class="text-lg font-extrabold text-primary"></h2>
+                        <span id="roomHeaderModel" class="px-3 py-1 rounded-lg bg-blue-50 text-accent text-xs font-bold"></span>
                     </div>
-
-                    <!-- 카드 2: 이 팀이 참고할 데이터셋 (체크박스 ON/OFF + 새 데이터셋 추가) -->
-                    <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h3 class="text-xs font-extrabold text-slate-800">📚 이 팀이 참고할 데이터셋 (Data Sources) 지정</h3>
-                                <p class="text-[11px] text-slate-400">체크된 데이터셋만 이 팀의 컨텍스트에 연결됩니다 (기존 레포는 100% Read-Only)</p>
-                            </div>
-                            <button onclick="pingRepos()" class="text-[11px] font-bold text-blue-600 hover:underline">↻ 연동 상태 점검</button>
-                        </div>
-
-                        <div id="roomDatasetList" class="space-y-2 text-xs">
-                            <!-- JS 체크박스 리스트 렌더링 -->
-                        </div>
-
-                        <!-- 새 데이터셋 추가 바 -->
-                        <div class="pt-2 border-t border-slate-100 flex gap-2">
-                            <input id="newDatasetNameInput" type="text" placeholder="추가할 참고 데이터셋 이름 (예: 2026 보증심사 세부기준)"
-                                class="w-1/2 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs outline-none focus:border-blue-600" />
-                            <input id="newDatasetUrlInput" type="text" placeholder="시트 CSV URL 또는 문서 경로"
-                                class="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs outline-none focus:border-blue-600" />
-                            <button onclick="addCustomDatasetToRoom()"
-                                class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold whitespace-nowrap">
-                                + 추가
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 카드 3: 팀 역할 및 업무지침서 직접 수정 에디터 -->
-                    <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h3 class="text-xs font-extrabold text-slate-800">📜 팀 역할 정의 및 업무지침서 (직접 수정 가능)</h3>
-                                <p class="text-[11px] text-slate-400">비서실장이 과업을 분류하고 팀을 배치할 때 아래 역할과 지침을 기준으로 판단합니다.</p>
-                            </div>
-                            <button onclick="resetRoomGuidelines()" class="text-[11px] text-slate-400 hover:text-rose-600 font-semibold">기본값 복원</button>
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-600 mb-1">핵심 역할 한 줄 정의 (Role Summary)</label>
-                            <input id="roomSubtitleInput" type="text"
-                                class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 outline-none focus:border-blue-600" />
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-600 mb-1">상세 업무지침 (System Prompt / 완료 기준 / 금지사항)</label>
-                            <textarea id="roomGuidelinesTextarea" rows="7"
-                                class="w-full p-3 rounded-lg border border-slate-300 text-xs text-slate-800 font-mono leading-relaxed outline-none focus:border-blue-600 bg-slate-50/50"></textarea>
-                        </div>
-
-                        <div class="flex justify-end">
-                            <button onclick="saveCurrentRoomConfig()"
-                                class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold">
-                                💾 역할·업무지침 저장하기
-                            </button>
-                        </div>
-                    </div>
+                    <div id="roomHeaderDatasets" class="flex flex-wrap gap-1.5"></div>
                 </div>
+                <p id="roomHeaderSubtitle" class="text-sm text-slate-600"></p>
+            </div>
 
-                <!-- 우측(6칼럼): 이 팀이 참여한 과제 이력 및 팀 고유 산출물 확인 -->
-                <div class="lg:col-span-6 bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col space-y-4">
-                    <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
-                        <div>
-                            <h3 class="text-sm font-extrabold text-slate-900">📁 이 팀의 참여 과제 및 팀 고유 산출물</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">과제별로 이 팀이 투입되었는지 여부와 실제 생성한 산출물을 확인합니다.</p>
-                        </div>
-                        <select id="roomTaskSelect" onchange="renderRoomTaskOutput()"
-                            class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-800 bg-slate-50 outline-none focus:border-blue-600">
-                        </select>
-                    </div>
-
-                    <div id="roomDeliverableBox" class="flex-1 p-5 rounded-xl bg-slate-50 border border-slate-200 text-xs leading-relaxed space-y-3 overflow-y-auto max-h-[680px]">
-                    </div>
+            <!-- 해당 팀 작업 내역 테이블 (1단 전체 폭) -->
+            <div class="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                <div class="px-5 py-3.5 border-b border-border">
+                    <h3 class="text-sm font-extrabold text-primary">수행 작업 및 팀 산출물 내역</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-border text-xs font-bold text-muted bg-slate-50/60">
+                                <th class="py-3.5 px-5 w-28">일자</th>
+                                <th class="py-3.5 px-4 w-56">과업명</th>
+                                <th class="py-3.5 px-4 w-28 text-center">투입 단계</th>
+                                <th class="py-3.5 px-5">이 팀의 처리 결과 요약</th>
+                            </tr>
+                        </thead>
+                        <tbody id="roomTasksTableBody" class="divide-y divide-border text-sm">
+                            <!-- JS 렌더링 -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
         <!-- ===================================================================== -->
-        <!-- [VIEW 3] 🗂️ 과제 히스토리 & 단계별 처리 상세 (누적 과제 선택 ➔ 해당 과제의 동적 단계별 처리 내역) -->
+        <!-- [탭 3] 히스토리 (1단 구성: 검색·필터 헤더 + 전체 과제 테이블 ➔ 클릭 시 단계별 상세 모달) -->
         <!-- ===================================================================== -->
-        <div id="view-archive" class="hidden space-y-5 no-print">
+        <div id="view-archive" class="hidden space-y-5">
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-
-                <!-- 좌측(4칼럼): 누적 과제 리스트 -->
-                <div class="lg:col-span-4 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                        <span class="text-xs font-extrabold text-slate-800">🗂️ 누적 과제 아카이브</span>
-                        <span id="archiveCountBadge" class="text-[11px] font-bold text-slate-500"></span>
-                    </div>
-                    <div id="archiveTaskList" class="divide-y divide-slate-100 max-h-[680px] overflow-y-auto"></div>
+            <!-- 상단 검색 바 -->
+            <div class="bg-white rounded-xl p-4 border border-border shadow-sm flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-extrabold text-primary">누적 과제 히스토리</span>
+                    <span id="archiveTotalBadge" class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold"></span>
                 </div>
+                <input id="archiveSearchInput" type="text" placeholder="과업명 검색..."
+                    oninput="renderArchiveView()"
+                    class="w-64 px-3.5 py-2 rounded-xl border border-border text-sm outline-none focus:ring-2 focus:ring-accent" />
+            </div>
 
-                <!-- 우측(8칼럼): 선택한 과제의 비서실장 동적 편성 사유 & 단계별 처리 내역 -->
-                <div class="lg:col-span-8 space-y-4">
-                    <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span id="archiveDetailId" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-extrabold text-xs"></span>
-                                <span id="archiveDetailCategory" class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-extrabold text-xs"></span>
-                                <span id="archiveDetailStatus" class="px-2 py-0.5 rounded-full text-xs font-extrabold"></span>
-                            </div>
-                            <h2 id="archiveDetailTitle" class="text-base font-black text-slate-900 mt-1.5"></h2>
-                            <p id="archiveDetailRoutingReason" class="text-xs text-slate-500 mt-1"></p>
-                        </div>
-                        <button onclick="goToDashboardWithTask(selectedTaskId)"
-                            class="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold">
-                            📄 최종 산출물·결재 화면으로 ➔
-                        </button>
-                    </div>
-
-                    <!-- 동적으로 투입된 팀들의 단계별 처리 카드만 순서대로 표시 -->
-                    <div id="archiveStepsContainer" class="space-y-3"></div>
+            <!-- 1단 히스토리 테이블 -->
+            <div class="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b-2 border-border text-xs font-bold text-muted bg-slate-50/60">
+                                <th class="py-3.5 px-5 w-24">번호</th>
+                                <th class="py-3.5 px-4 w-32">일자</th>
+                                <th class="py-3.5 px-4 w-32">유형</th>
+                                <th class="py-3.5 px-4">지시 과업</th>
+                                <th class="py-3.5 px-4 w-64">산출물</th>
+                                <th class="py-3.5 px-5 w-28 text-center">상태</th>
+                            </tr>
+                        </thead>
+                        <tbody id="archiveTableBody" class="divide-y divide-border text-sm">
+                            <!-- JS 렌더링 -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- ═══════════ GLOBAL API KEY MODAL ═══════════ -->
-    <div id="globalKeyModal"
-        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 class="text-base font-extrabold text-slate-900">🔑 공통 API 키 및 기본 레포 연동 확인</h3>
-                <button onclick="closeGlobalKeyModal()" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
-            </div>
-            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 leading-relaxed">
-                <b>🔒 Read-Only 안전 보장:</b> 기존 <code>ai_news_briefing</code> 및 <code>meeting_copilot</code> 데이터는 오직 읽기 전용(GET)으로만 참조합니다. 각 팀별 개별 API/모델/데이터셋 설정은 <b>[🏢 팀별 집무실·개별설정]</b> 탭에서 팀마다 설정하실 수 있습니다.
-            </div>
-            <div class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">공통 Gemini / OpenRouter API Key (선택)</label>
-                    <input id="inputGlobalApiKey" type="password" placeholder="AIzaSy... 또는 sk-or-..."
-                        class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none focus:border-blue-600" />
+    <!-- ========================================================================= -->
+    <!-- [모달 1] 과제 상세 · 산출물 · 단계별 처리 모달 (테이블 행 클릭 시 팝업) -->
+    <!-- ========================================================================= -->
+    <div id="taskDetailModal"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="modal-box bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-border overflow-hidden">
+
+            <!-- 모달 상단 헤더 -->
+            <div class="px-6 py-4 border-b border-border flex flex-wrap items-center justify-between gap-3 bg-slate-50 no-print">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <span id="modalTaskStatus" class="px-2.5 py-1 rounded-full text-xs font-bold shrink-0"></span>
+                    <h2 id="modalTaskTitle" class="text-base sm:text-lg font-extrabold text-primary truncate"></h2>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button id="modalApproveBtn" onclick="approveModalTask()"
+                        class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors">
+                        결재 승인
+                    </button>
+                    <button onclick="copyModalContent()"
+                        class="px-3 py-1.5 rounded-xl bg-white border border-border hover:bg-slate-100 text-slate-700 text-xs font-bold">
+                        복사
+                    </button>
+                    <button onclick="window.print()"
+                        class="px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold">
+                        인쇄
+                    </button>
+                    <button onclick="closeTaskDetailModal()"
+                        class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold">
+                        ✕
+                    </button>
                 </div>
             </div>
-            <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-                <button onclick="closeGlobalKeyModal()"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold rounded-xl">저장 및 닫기</button>
+
+            <!-- 모달 서브탭 바: [산출물 탭들] + [단계별 처리과정 탭] -->
+            <div class="px-6 py-2.5 border-b border-border flex flex-wrap items-center justify-between gap-2 bg-white no-print">
+                <div id="modalSubTabs" class="flex flex-wrap gap-1.5">
+                    <!-- JS 렌더링: 보고서 | 요약서 | 대조표 | ... | 단계별 과정 -->
+                </div>
+                <span id="modalTaskDate" class="text-xs text-muted"></span>
+            </div>
+
+            <!-- 모달 본문 영역 -->
+            <div id="modalBodyContent" class="p-6 sm:p-8 overflow-y-auto flex-1 doc-viewer">
+                <!-- JS 렌더링 -->
             </div>
         </div>
     </div>
 
-    <!-- ═══════════ CORE JAVASCRIPT: PER-TEAM CONFIG + CHIEF SECRETARY DYNAMIC ROUTING ═══════════ -->
-    <script>
-        const NEWS_GAS_URL = 'https://script.google.com/macros/s/AKfycbwtgUJ0QfKHPn6HLt2U41OLUog92RFVaKPyLLVwQodq03LMm50qm4dwQk798D3ovFcaHw/exec';
+    <!-- ========================================================================= -->
+    <!-- [모달 2] 새 과업 지시 · 비서실장 프로세스 편성 모달 -->
+    <!-- ========================================================================= -->
+    <div id="routingModal"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-border space-y-5">
+            <div class="flex items-center justify-between border-b border-border pb-3">
+                <h3 class="text-base font-extrabold text-primary">비서실장 프로세스 · 산출물 편성</h3>
+                <button onclick="closeRoutingModal()" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
+            </div>
 
+            <div>
+                <div class="text-xs font-bold text-muted mb-1">지시 과업</div>
+                <div id="routingModalTopic" class="text-base font-extrabold text-primary"></div>
+            </div>
+
+            <!-- 참여 팀 선택 -->
+            <div class="space-y-2">
+                <div class="text-xs font-bold text-slate-700">1. 투입 팀 및 순서 (클릭하여 변경)</div>
+                <div id="routingTeamButtons" class="flex flex-wrap gap-2"></div>
+                <div id="routingSequenceText" class="text-xs font-bold text-accent pt-1"></div>
+            </div>
+
+            <!-- 산출물 선택 -->
+            <div class="space-y-2">
+                <div class="text-xs font-bold text-slate-700">2. 생성할 산출물 (클릭하여 변경)</div>
+                <div id="routingDelivButtons" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-3 border-t border-border">
+                <button onclick="closeRoutingModal()"
+                    class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-bold">취소</button>
+                <button onclick="confirmAndRunTask()"
+                    class="px-5 py-2 rounded-xl bg-accent hover:bg-blue-700 text-white text-sm font-bold">실행</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- [모달 3] 팀별 설정 모달 (역할·업무지침 / API·모델 / 참고 데이터셋) -->
+    <!-- ========================================================================= -->
+    <div id="teamSettingsModal"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-border overflow-hidden">
+            <div class="px-6 py-4 border-b border-border flex items-center justify-between bg-slate-50">
+                <h3 id="settingsModalTitle" class="text-base font-extrabold text-primary">팀 설정</h3>
+                <button onclick="closeTeamSettingsModal()" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-5 text-sm">
+                <!-- 1. API 및 모델 -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">API 공급자</label>
+                        <select id="cfgApiProvider" class="w-full px-3 py-2 rounded-xl border border-border font-semibold bg-slate-50 outline-none">
+                            <option value="Google Gemini API">Google Gemini API</option>
+                            <option value="Anthropic Claude API">Anthropic Claude API</option>
+                            <option value="OpenAI / OpenRouter">OpenAI / OpenRouter</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">AI 모델</label>
+                        <select id="cfgModel" class="w-full px-3 py-2 rounded-xl border border-border font-semibold bg-slate-50 outline-none">
+                            <option value="claude-opus-5.5">claude-opus-5.5</option>
+                            <option value="gemini-4-argon">gemini-4-argon</option>
+                            <option value="gpt-6-astra">gpt-6-astra</option>
+                            <option value="gemini-3.5-flash">gemini-3.5-flash</option>
+                            <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">팀 전용 API Key (선택)</label>
+                    <input id="cfgCustomKey" type="password" placeholder="미입력 시 공통 API 키 사용"
+                        class="w-full px-3.5 py-2 rounded-xl border border-border text-sm outline-none" />
+                </div>
+
+                <!-- 2. 참고 데이터셋 선택 및 추가 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">참고 데이터셋</label>
+                    <div id="cfgDatasetList" class="space-y-2"></div>
+                    <div class="flex gap-2 pt-2">
+                        <input id="newDsName" type="text" placeholder="새 데이터셋 이름"
+                            class="w-1/2 px-3 py-1.5 rounded-xl border border-border text-xs outline-none" />
+                        <input id="newDsUrl" type="text" placeholder="URL 또는 문서 경로"
+                            class="flex-1 px-3 py-1.5 rounded-xl border border-border text-xs outline-none" />
+                        <button onclick="addDatasetInModal()"
+                            class="px-3.5 py-1.5 rounded-xl bg-slate-800 text-white text-xs font-bold whitespace-nowrap">+ 추가</button>
+                    </div>
+                </div>
+
+                <!-- 3. 역할 및 업무지침 -->
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">핵심 역할</label>
+                        <input id="cfgSubtitle" type="text"
+                            class="w-full px-3.5 py-2 rounded-xl border border-border text-sm font-medium outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">업무지침 (System Prompt)</label>
+                        <textarea id="cfgGuidelines" rows="6"
+                            class="w-full p-3.5 rounded-xl border border-border text-sm leading-relaxed outline-none bg-slate-50/50"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 border-t border-border flex items-center justify-between bg-slate-50">
+                <button onclick="resetCurrentTeamConfig()" class="text-xs font-bold text-rose-600 hover:underline">초기값 복원</button>
+                <div class="flex gap-2">
+                    <button onclick="closeTeamSettingsModal()" class="px-4 py-2 rounded-xl bg-white border border-border text-slate-700 text-sm font-bold">닫기</button>
+                    <button onclick="saveTeamSettingsFromModal()" class="px-5 py-2 rounded-xl bg-accent hover:bg-blue-700 text-white text-sm font-bold">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- [모달 4] 공통 API 설정 모달 -->
+    <!-- ========================================================================= -->
+    <div id="globalKeyModal"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-border space-y-4">
+            <div class="flex items-center justify-between border-b border-border pb-3">
+                <h3 class="text-base font-extrabold text-primary">공통 API 설정</h3>
+                <button onclick="closeGlobalKeyModal()" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">API Key</label>
+                <input id="inputGlobalApiKey" type="password" placeholder="API Key 입력..."
+                    class="w-full px-3.5 py-2 rounded-xl border border-border text-sm outline-none" />
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeGlobalKeyModal()"
+                    class="px-5 py-2 bg-accent text-white text-sm font-bold rounded-xl">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ 스크립트 로직 ═══════════ -->
+    <script>
         let currentMainView = 'dashboard';
         let currentTaskFilter = 'all';
-        let currentDocSubTab = '';
         let currentRoomKey = 'secretary';
+        let activeModalTaskId = null;
+        let activeModalTab = '';
+        let draftPlan = null;
 
-        // 1. 공통 데이터셋 카탈로그 (각 팀별로 체크박스로 선택/해제 가능 + 커스텀 추가 가능)
+        // 데이터셋 목록
         const DEFAULT_DATASETS = [
-            { id: 'ds_news', name: 'ai_news_briefing (AI 뉴스비서)', desc: '일일 수집 뉴스 및 서울신보 업무 시사점 (GAS GET Read-Only)', url: 'https://script.google.com/macros/s/AKfycbwtgUJ0QfKHPn6HLt2U41OLUog92RFVaKPyLLVwQodq03LMm50qm4dwQk798D3ovFcaHw/exec' },
-            { id: 'ds_meeting', name: 'meeting_copilot (미팅 코파일럿 지식DB)', desc: '센터 주간회의록, 2026 변경사업계획서, 과거 기각 안건 이력 (5열 시트)', url: 'https://script.google.com/macros/s/AKfycby8RFA7VPYW2K3GMt76VYfQ89KEunBgyB3xMRNL2cx39YeP4RJzJFoC1E6O0DcEdbZLkA/exec' },
-            { id: 'ds_audit_rule', name: '지역신보 보증규정 및 대위변제율 관리 기준', desc: '부분보증(85~90%) 책임분담 기준 및 한계기업 중복지원 제한 준거틀', url: 'internal://scgf-risk-compliance-v2026' },
-            { id: 'ds_branch_ops', name: '지점 창구 디지털 심사 및 비대면 스크래핑 지침', desc: '심사역 1인당 일 처리 한도(12건), 모바일 마이데이터 자동 징구 매뉴얼', url: 'internal://scgf-branch-fasttrack-manual' },
-            { id: 'ds_doc_style', name: '서울신용보증재단 표준 공문서(개조식) 작성 요령', desc: '□·○·-·• 위계 기호 및 [당초 X → 최종 Y] 수치 대조 공식', url: 'internal://scgf-official-doc-style' }
+            { id: 'ds_news', name: 'AI 뉴스비서 (ai_news_briefing)', desc: '일일 뉴스 및 시사점 DB' },
+            { id: 'ds_meeting', name: '미팅 코파일럿 (meeting_copilot)', desc: '주간회의록 · 사업계획서 5열 지식DB' },
+            { id: 'ds_audit_rule', name: '지역신보 보증규정 · 대위변제 기준', desc: '부분보증 및 리스크 관리 기준' },
+            { id: 'ds_branch_ops', name: '지점 창구 디지털 심사 지침', desc: '비대면 스크래핑 및 약식심사 기준' },
+            { id: 'ds_doc_style', name: '재단 표준 공문서 서식', desc: '개조식 위계 및 수치 대조 서식' }
         ];
 
-        // 2. 6개 팀(비서실장 + 5대 실무팀) 기본 설정 (역할, 지침, API/모델, 연결 데이터셋 ID 목록)
+        // 6개 팀 기본 설정
         const DEFAULT_TEAM_CONFIGS = {
             secretary: {
                 key: 'secretary',
-                shortName: '🎯 비서실장',
-                name: '🎯 비서실장실 (Master Orchestrator)',
-                roleTag: 'Chief Secretary & Dynamic Router',
+                name: '비서실장',
                 apiProvider: 'Anthropic Claude API',
-                model: 'claude-opus-5.5 (고밀도 문서·전략)',
-                temp: '0.1 (엄격·팩트 중심)',
+                model: 'claude-opus-5.5',
                 customKey: '',
                 datasetIds: ['ds_news', 'ds_meeting', 'ds_audit_rule', 'ds_branch_ops'],
-                subtitle: '센터장이 던진 주제를 분석하여 최적의 참여 팀, 작업 순서(프로세스), 필요 산출물을 동적으로 편성하고 최종 결론을 조율합니다.',
-                guidelines: `[역할] 시스템 내 최고 지능을 가진 마스터 오케스트레이터로서 모든 과제를 획일적 순서로 처리하지 않고 주제별로 필요한 팀과 산출물만 정밀 편성한다.\n[동적 라우팅 기준]\n1. 신사업/특례보증 기획 ➔ 리서치팀 → 기획팀 → 감사팀·운영팀 → 비서실장 → 미디어팀 (산출물: 결재보고서, 1P요약, Plan A→B 대조표, PT·보도자료)\n2. 창구/내부 프로세스 개선 ➔ 리서치팀 → 운영팀(주도) → 감사팀(규정검토) → 비서실장 → 미디어팀 (산출물: 프로세스 개선 보고서, As-Is→To-Be 비교표, 시행 공문)\n3. 시의회/본부 감사 대응 ➔ 리서치팀 → 감사팀(주도) → 운영팀(현장팩트) → 비서실장 (산출물: 예상 질의·답변서 Q&A, 건전성 팩트 체크표, 발언 요지)\n4. 대내외 동향 신속 브리핑 ➔ 리서치팀 → 비서실장 → 미디어팀 (산출물: 핵심 동향 브리핑 노트, 간부회의 1P 요약표)`
+                subtitle: '과업 성격에 맞춰 참여 팀, 작업 순서, 필요 산출물을 동적으로 편성하고 최종안을 조율합니다.',
+                guidelines: '1. 과업 접수 시 주제 성격에 따라 필요한 팀만 선별하여 최적의 작업 순서를 편성한다.\n2. 과제 성격에 맞는 맞춤형 산출물(보고서, 요약서, 대조표, 질의답변, 절차개선 등)만 지정한다.\n3. 각 팀의 검증 결과를 종합하여 최종 결재안을 도출한다.'
             },
             research: {
                 key: 'research',
-                shortName: '🔍 리서치팀',
-                name: '🔍 리서치팀 집무실',
-                roleTag: 'Intelligence & Context Team',
+                name: '리서치팀',
                 apiProvider: 'Google Gemini API',
-                model: 'gemini-2.5-flash (초고속 데이터 스캔)',
-                temp: '0.1 (엄격·팩트 중심)',
+                model: 'gemini-2.5-flash',
                 customKey: '',
                 datasetIds: ['ds_news', 'ds_meeting'],
-                subtitle: '대외 뉴스비서 트렌드와 내부 미팅코파일럿 회의록·지식DB를 교차 스캔하여 검증된 팩트와 수치를 공급합니다.',
-                guidelines: `1. 새로운 정책을 창작하지 않고 오직 외부 경제 지표(ai_news_briefing)와 내부 회의록·사업계획 수치(meeting_copilot)를 교차 발췌한다.\n2. 미팅 코파일럿 5열 시트에서 1~4열 메타데이터를 먼저 스캔한 뒤 관련도 상위 문서만 전문을 참조한다.\n3. 당초 계획 대비 변경 수치(당초 X → 최종 Y)와 센터장 지시사항·과거 기각 사유를 빠짐없이 기록한다.`
+                subtitle: '뉴스비서 트렌드와 미팅코파일럿 회의록·사업계획을 교차 스캔하여 핵심 팩트를 추출합니다.',
+                guidelines: '1. 외부 경제·정책 뉴스(ai_news_briefing)와 내부 회의록·사업계획(meeting_copilot)에서 관련 팩트와 수치를 발췌한다.\n2. 초기 계획 대비 변경 수치 및 과거 기각 사유를 정확히 대조한다.'
             },
             planning: {
                 key: 'planning',
-                shortName: '💡 기획팀',
-                name: '💡 기획팀 집무실',
-                roleTag: 'Policy & Product Planning Team',
+                name: '기획팀',
                 apiProvider: 'Google Gemini API',
-                model: 'gemini-4-argon (최상위 추론)',
-                temp: '0.6 (창의·공격적 기획)',
+                model: 'gemini-4-argon',
                 customKey: '',
                 datasetIds: ['ds_news', 'ds_meeting'],
-                subtitle: '신사업·특례보증 과업 시 소상공인 체감 혜택을 극대화한 초기 기획안(Plan A)과 6대 설계 파라미터를 발제합니다.',
-                guidelines: `1. 소상공인 금융비용 절감과 체감 지원 효과를 최우선으로 하는 공격적 초기 기획안(Plan A)을 설계한다.\n2. 후속 감사팀과 운영팀이 검증할 수 있도록 ①총규모 ②업체당한도 ③보증비율 ④보증료/금리우대 ⑤비금융 연계 ⑥접수·심사방식을 구체적 수치로 명시한다.`
+                subtitle: '소상공인 체감 혜택을 극대화한 초기 기획안(Plan A)과 세부 지원 파라미터를 설계합니다.',
+                guidelines: '1. 신사업 및 특례보증 과업 시 총규모, 업체당한도, 보증비율, 보증료율, 비금융 연계, 심사방식 6대 파라미터를 포함해 초안을 발제한다.'
             },
             audit: {
                 key: 'audit',
-                shortName: '🛡️ 감사팀',
-                name: '🛡️ 감사팀 집무실',
-                roleTag: 'Risk & Compliance Red-Team',
+                name: '감사팀',
                 apiProvider: 'OpenAI / OpenRouter',
-                model: 'gpt-6-astra (레드팀·감사 특화)',
-                temp: '0.1 (엄격·팩트 중심)',
+                model: 'gpt-6-astra',
                 customKey: '',
                 datasetIds: ['ds_meeting', 'ds_audit_rule'],
-                subtitle: '대위변제율 급증 위험, 보증규정 위배, 도덕적 해이를 감사하고 시의회 행정사무감사 방어 논리 및 필수 안전장치(HC)를 수립합니다.',
-                guidelines: `1. 기획안의 부실률(대위변제율) 상승 위험과 예산 조기 고갈 가능성을 정량적으로 타격하고 필수 안전장치(Hard Constraints: 부분보증, 분할한도, 조건부 감면, 중복차단)를 발행한다.\n2. 시의회 행정사무감사 또는 본부 심의 대응 과업 시에는 주도 팀으로 나서서 공격 예상 질문과 수치 기반 방어 답변(Q&A)을 작성한다.`
+                subtitle: '대위변제율 리스크와 보증규정 위배 여부를 검증하고 시의회·본부 감사 방어 논리를 수립합니다.',
+                guidelines: '1. 기획안의 부실 위험을 점검하여 부분보증(90%), 분할한도, 조건부 감면 등 필수 안전장치를 부여한다.\n2. 감사 대응 과업 시 예상 공격 질의와 수치 기반 방어 답변(Q&A)을 작성한다.'
             },
             operations: {
                 key: 'operations',
-                shortName: '⚙️ 운영팀',
-                name: '⚙️ 운영팀 집무실',
-                roleTag: 'Branch Operations & Process Team',
+                name: '운영팀',
                 apiProvider: 'Google Gemini API',
-                model: 'gemini-3.5-flash (고속 기획·조율)',
-                temp: '0.3 (균형·표준 행정)',
+                model: 'gemini-3.5-flash',
                 customKey: '',
                 datasetIds: ['ds_meeting', 'ds_branch_ops'],
-                subtitle: '지점 창구 심사 병목 해소, 모바일 비대면 스크래핑 도입, 센터 비금융 컨설팅 진도율 달성 등 현장 실행 프로세스를 설계합니다.',
-                guidelines: `1. 지점 창구 심사역 업무부하(1인당 일 12건 한도)와 현장실사 지연을 점검하고 모바일 마이데이터 스크래핑(서류 5종→1종) 및 약식심사(15일→3일) 대안을 제시한다.\n2. 창구 운영 및 내부 제도개선 과업 시에는 주도 팀으로 나서서 현행(As-Is) 대비 개선(To-Be) 업무절차를 설계한다.`
+                subtitle: '지점 창구 병목 해소, 모바일 비대면 스크래핑, 심사 기간 단축 등 현장 운영 절차를 설계합니다.',
+                guidelines: '1. 창구 심사역 업무 부하를 점검하고 모바일 마이데이터 스크래핑(서류 5종→1종) 및 약식심사(15일→3일) 대안을 제시한다.\n2. 센터 비금융 컨설팅 진도율 달성을 위한 운영 절차를 설계한다.'
             },
             media: {
                 key: 'media',
-                shortName: '📑 미디어팀',
-                name: '📑 미디어팀 집무실',
-                roleTag: 'Official Document & Media Production',
+                name: '미디어팀',
                 apiProvider: 'Anthropic Claude API',
-                model: 'claude-opus-5.5 (고밀도 문서·전략)',
-                temp: '0.3 (균형·표준 행정)',
+                model: 'claude-opus-5.5',
                 customKey: '',
                 datasetIds: ['ds_doc_style'],
-                subtitle: '비서실장이 지정한 맞춤형 산출물 목록에 따라 재단 표준 개조식 보고서, 요약서, 공문, PT 및 보도자료를 완결 포맷팅합니다.',
-                guidelines: `1. 모든 공식 보고서는 공공기관 표준 개조식 기호(□ ➔ ○ ➔ - ➔ •)를 준수하며 본문 내 불필요한 수식어와 이모지를 배제한다.\n2. 수치 변화는 반드시 [당초 X → 최종 Y (증감 Z)] 공식으로 표기하고, 비서실장이 해당 과제에 요청한 맞춤형 산출물 세트를 정확히 생성한다.`
+                subtitle: '재단 표준 개조식 보고서, 요약서, 대조표, 시행공문, 발표·보도자료를 포맷팅합니다.',
+                guidelines: '1. 공공기관 표준 개조식 기호(□, ○, -, •)와 수치 대조 공식([당초 X → 최종 Y])을 적용하여 완결된 문서를 생성한다.'
             }
         };
 
-        // 전체 산출물 카탈로그 (비서실장이 과제 유형에 따라 필요한 것만 골라서 배정)
+        // 간결한 산출물 명칭 및 아이콘 버튼 스타일 카탈로그 (토탈솔루션·현장촬영앱 관리자 화면 스타일)
         const DELIVERABLE_CATALOG = {
-            official_report: { key: 'official_report', label: '📄 결재용 개조식 보고서' },
-            onepager: { key: 'onepager', label: '📋 1장 요약서 (One-Pager)' },
-            diff_table: { key: 'diff_table', label: '📈 Plan A→B 품질개선 대조표' },
-            pt_press: { key: 'pt_press', label: '🖥️ PT 슬라이드 & 보도자료' },
-            process_asis_tobe: { key: 'process_asis_tobe', label: '🔄 업무절차 As-Is → To-Be 개선표' },
-            branch_notice: { key: 'branch_notice', label: '📢 지점 시행 공문 초안' },
-            audit_qna: { key: 'audit_qna', label: '🛡️ 시의회·본부 감사 방어 Q&A' },
-            risk_fact_sheet: { key: 'risk_fact_sheet', label: '📊 건전성·대위변제율 팩트체크표' },
-            trend_briefing: { key: 'trend_briefing', label: '📰 대내외 핵심 동향 브리핑 노트' }
+            official_report: {
+                key: 'official_report',
+                label: '보고서',
+                icon: '📄',
+                btnClass: 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100'
+            },
+            onepager: {
+                key: 'onepager',
+                label: '요약서',
+                icon: '📋',
+                btnClass: 'bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100'
+            },
+            diff_table: {
+                key: 'diff_table',
+                label: '대조표',
+                icon: '📊',
+                btnClass: 'bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100'
+            },
+            pt_press: {
+                key: 'pt_press',
+                label: '발표·보도',
+                icon: '🖥️',
+                btnClass: 'bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100'
+            },
+            audit_qna: {
+                key: 'audit_qna',
+                label: '질의답변',
+                icon: '🛡️',
+                btnClass: 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100'
+            },
+            risk_fact_sheet: {
+                key: 'risk_fact_sheet',
+                label: '리스크점검',
+                icon: '📈',
+                btnClass: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+            },
+            process_asis_tobe: {
+                key: 'process_asis_tobe',
+                label: '절차개선',
+                icon: '⚙️',
+                btnClass: 'bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100'
+            },
+            branch_notice: {
+                key: 'branch_notice',
+                label: '시행공문',
+                icon: '📨',
+                btnClass: 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
+            },
+            trend_briefing: {
+                key: 'trend_briefing',
+                label: '동향노트',
+                icon: '📰',
+                btnClass: 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100'
+            }
         };
 
-        let datasets = JSON.parse(localStorage.getItem('scgf_datasets_v3') || 'null') || DEFAULT_DATASETS;
-        let teamConfigs = JSON.parse(localStorage.getItem('scgf_team_configs_v3') || 'null') || JSON.parse(JSON.stringify(DEFAULT_TEAM_CONFIGS));
+        let datasets = JSON.parse(localStorage.getItem('scgf_clean_datasets_v1') || 'null') || DEFAULT_DATASETS;
+        let teamConfigs = JSON.parse(localStorage.getItem('scgf_clean_teams_v1') || 'null') || JSON.parse(JSON.stringify(DEFAULT_TEAM_CONFIGS));
 
         function saveTeamConfigs() {
-            localStorage.setItem('scgf_team_configs_v3', JSON.stringify(teamConfigs));
-            localStorage.setItem('scgf_datasets_v3', JSON.stringify(datasets));
+            localStorage.setItem('scgf_clean_teams_v1', JSON.stringify(teamConfigs));
+            localStorage.setItem('scgf_clean_datasets_v1', JSON.stringify(datasets));
         }
 
-        // ═══════════ 3. 비서실장의 동적 과업 분류 & 프로세스·산출물 설계 엔진 ═══════════
+        // 비서실장 동적 라우팅 분석
         function analyzeTopicByChiefSecretary(topic) {
             const t = topic.toLowerCase();
-
-            // 유형 1: 시의회 감사 / 방어 논리 / Q&A / 부실률·대위변제 점검
-            if (t.includes('감사') || t.includes('시의회') || t.includes('방어') || t.includes('질의') || t.includes('q&a') || t.includes('대위변제율 급증')) {
+            if (t.includes('감사') || t.includes('시의회') || t.includes('방어') || t.includes('질의') || t.includes('q&a')) {
                 return {
-                    category: '시의회·본부 감사 대응',
-                    reason: '본 과업은 신상품 기획이 아닌 대외 감사·심의 방어 목적입니다. 따라서 기획팀과 미디어팀을 제외하고 [리서치팀(통계·기각이력 스캔) ➔ 감사팀(주도·공격질의 및 방어논리 수립) ➔ 운영팀(현장 심사 팩트 검증) ➔ 비서실장(최종 발언요지 정리)] 4단계 집중 프로세스로 편성했습니다.',
+                    category: '감사 대응',
                     teamSequence: ['research', 'audit', 'operations', 'secretary'],
                     deliverableKeys: ['audit_qna', 'risk_fact_sheet', 'onepager']
                 };
             }
-
-            // 유형 2: 창구 운영 / 서류 간소화 / 비대면 스크래핑 / 대기시간 / 프로세스 개선
-            if (t.includes('창구') || t.includes('대기시간') || t.includes('간소화') || t.includes('스크래핑') || t.includes('절차') || t.includes('진도율') || t.includes('패스트트랙')) {
+            if (t.includes('창구') || t.includes('대기시간') || t.includes('간소화') || t.includes('스크래핑') || t.includes('절차') || t.includes('패스트트랙')) {
                 return {
-                    category: '창구·내부 프로세스 개선',
-                    reason: '본 과업은 지점 창구 병목 해소 및 내부 심사 절차 개선이 핵심입니다. 따라서 기획팀을 생략하고 [리서치팀(내부지침 스캔) ➔ 운영팀(주도·To-Be 프로세스 설계) ➔ 감사팀(규정 위배·보안 검토) ➔ 비서실장 ➔ 미디어팀(시행공문 작성)] 순서로 편성했습니다.',
+                    category: '절차 개선',
                     teamSequence: ['research', 'operations', 'audit', 'secretary', 'media'],
                     deliverableKeys: ['official_report', 'process_asis_tobe', 'branch_notice']
                 };
             }
-
-            // 유형 3: 언론 동향 / 브리핑 / 현황 파악 / 뉴스 요약
-            if (t.includes('동향') || t.includes('브리핑') || t.includes('언론') || t.includes('뉴스') || t.includes('현황 보고')) {
+            if (t.includes('동향') || t.includes('브리핑') || t.includes('언론') || t.includes('뉴스')) {
                 return {
-                    category: '대내외 동향 신속 브리핑',
-                    reason: '본 과업은 신속한 팩트 파악 및 현안 공유가 목적입니다. 기획·감사·운영 공방 단계를 과감히 생략하고 [리서치팀(뉴스비서+회의록 교차 스캔) ➔ 비서실장(핵심 시사점 도출) ➔ 미디어팀(브리핑 노트 작성)] 3단계 고속 라인업으로 편성했습니다.',
+                    category: '동향 브리핑',
                     teamSequence: ['research', 'secretary', 'media'],
                     deliverableKeys: ['trend_briefing', 'onepager']
                 };
             }
-
-            // 유형 4 (기본 종합): 신사업 / 특례보증 / 패키지 기획
             return {
-                category: '신사업·특례보증 종합 기획',
-                reason: '본 과업은 예산 투입과 보증 조건 설계가 수반되는 종합 정책 기획안입니다. [리서치팀 ➔ 기획팀(Plan A 초안) ➔ 감사팀(부실률 제어)·운영팀(창구 병목 해소) 교차 검증 ➔ 비서실장(Plan B 절충) ➔ 미디어팀] 전 팀 풀가동 프로세스로 편성했습니다.',
+                category: '신사업 기획',
                 teamSequence: ['research', 'planning', 'audit', 'operations', 'secretary', 'media'],
                 deliverableKeys: ['official_report', 'onepager', 'diff_table', 'pt_press']
             };
         }
 
-        // 과제 레코드 생성기 (동적 팀 순서와 맞춤형 산출물 반영)
-        function createDynamicTaskRecord(id, date, topic, status, routingPlan, scoreBefore, scoreAfter) {
-            const teamNames = routingPlan.teamSequence.map(k => teamConfigs[k]?.shortName || k).join(' ➔ ');
-            const delivLabels = routingPlan.deliverableKeys.map(k => DELIVERABLE_CATALOG[k]?.label || k);
-
-            // 각 팀별 작업 결과 (투입된 팀만 생성)
-            const teamOutputs = {
-                research: `
-                    <div class="font-extrabold text-slate-900 text-sm mb-1.5">🔍 [리서치팀] 연결 데이터셋 스캔 및 팩트 브리핑 패킷</div>
-                    <p class="text-[11px] text-slate-500 mb-2">참조 데이터셋: <code>ai_news_briefing</code>, <code>meeting_copilot (5열 시트)</code></p>
-                    <ul class="list-disc pl-4 space-y-1 text-slate-700">
-                        <li><b>[외부 시그널]</b> 「${topic}」 관련 고금리·수수료 부담으로 관내 소상공인 영업이익 전년비 <b>18.5% 감소</b>, 지역신보 평균 대위변제율 <b>4.8%</b> 기록 [한국경제·연합뉴스, ${date}].</li>
-                        <li><b>[내부 회의록·계획 대조]</b> 주간회의 센터장 지시("단발성 지원 지양·사전 컨설팅 패키지화") 및 2026 변경사업계획 목표(보증 당초 1.2조→1.35조, 컨설팅 당초 500건→800건, 현 진도율 72.0%) 추출 완료.</li>
-                    </ul>
-                `,
-                planning: `
-                    <div class="font-extrabold text-slate-900 text-sm mb-1.5">💡 [기획팀] 초기 공격적 기획안 (Plan A — 초기 점수 ${scoreBefore}점)</div>
-                    <ul class="list-disc pl-4 space-y-1 text-slate-700">
-                        <li><b>초안 설계:</b> 총 150억 원(300개사), 업체당 일괄 5,000만 원 <b>100% 전액보증</b> 및 <b>보증료 100% 면제</b>, 대면 서류 5종·전수 현장실사(15일 소요) 발제.</li>
-                    </ul>
-                `,
-                audit: `
-                    <div class="font-extrabold text-slate-900 text-sm mb-1.5">🛡️ [감사팀] 리스크·규정 적법성 검증 및 방어 논리 (Hard Constraints)</div>
-                    <ul class="list-disc pl-4 space-y-1 text-slate-700">
-                        <li><b>[HC-1 부분보증]</b> 100% 전액보증 시 대위변제율 7.2% 급증 우려 ➔ <b>90% 부분보증(은행 10% 책임분담)</b> 강제.</li>
-                        <li><b>[HC-2 분할한도 & 조건부감면]</b> <b>1차 3,000만 + 1년 성실상환 시 2차 2,000만 원 분할</b> 및 <b>사전 컨설팅 수료 조건부 보증료 0.5%p 감면</b>으로 예산 조기 고갈 차단.</li>
-                    </ul>
-                `,
-                operations: `
-                    <div class="font-extrabold text-slate-900 text-sm mb-1.5">⚙️ [운영팀] 지점 창구 병목 해소 및 디지털 심사 설계 (Alternative Process)</div>
-                    <ul class="list-disc pl-4 space-y-1 text-slate-700">
-                        <li><b>[AP-1 비대면 스크래핑]</b> 대면 종이 서류 5종 징구 폐지 ➔ 모바일 앱 국세청·마이데이터 자동 연동으로 <b>제출서류 당초 5종 → 최종 1종 축소</b>.</li>
-                        <li><b>[AP-2 약식심사 패스트트랙]</b> 업력 1년+·사전 컨설팅 이수 기업 현장실사 면제로 <b>심사기한 당초 15일 → 최종 3일 단축</b> 및 컨설팅 진도율 100% 달성.</li>
-                    </ul>
-                `,
-                secretary: `
-                    <div class="font-extrabold text-slate-900 text-sm mb-1.5">🎯 [비서실장] 동적 프로세스 조율 및 최종 결론 도출 (${scoreBefore}점 ➔ ${scoreAfter}점)</div>
-                    <ul class="list-disc pl-4 space-y-1 text-slate-700">
-                        <li><b>[라우팅 판단]</b> 과업 유형을 <b>[${routingPlan.category}]</b>(으)로 판별하여 <b>${teamNames}</b> 순서로 가동함.</li>
-                        <li><b>[최종 결론]</b> 참여 팀들의 제약조건과 현장 대안을 결합하여 수혜 대상 확대(300→500개사), 부실률 통제(4.2% 이하), 처리기간 단축(15일→3일)을 동시 달성한 최종안 확정.</li>
-                    </ul>
-                `,
-                media: `
-                    <div class="font-extrabold text-slate-900 text-sm mb-1.5">📑 [미디어팀] 과제 맞춤형 산출물 ${delivLabels.length}종 포맷팅 완료</div>
-                    <p class="text-slate-700">비서실장이 지정한 <b>${delivLabels.join(', ')}</b> 문서를 재단 표준 개조식(□, ○, -, •) 및 수치 대조 공식으로 생성 완료함.</p>
-                `
-            };
-
+        function createTaskRecord(id, date, topic, status, routingPlan) {
             return {
                 id,
                 date,
                 topic,
                 status,
                 category: routingPlan.category,
-                routingReason: routingPlan.reason,
                 teamSequence: routingPlan.teamSequence,
                 deliverableKeys: routingPlan.deliverableKeys,
-                scoreBefore,
-                scoreAfter,
-                summaryLines: [
-                    `• <b>[비서실장 편성]</b> <code>${routingPlan.category}</code> 유형으로 분류 ➔ <b>${teamNames}</b> (${routingPlan.teamSequence.length}단계 맞춤형 가동)`,
-                    `• <b>[핵심 처리 결과]</b> 뉴스비서·미팅코파일럿 팩트 결합 후 리스크 통제(90% 부분보증·분할한도) 및 비대면 심사 간소화(서류 5종→1종, 15일→3일) 반영`,
-                    `• <b>[생성 산출물 (${delivLabels.length}종)]</b> ${delivLabels.join(' / ')}`
-                ],
-                teamOutputs
+                teamSummaries: {
+                    research: '뉴스비서(영업이익 -18.5%, 대위변제율 4.8%) 및 미팅코파일럿(컨설팅 패키지화 지시, 진도율 72%) 팩트 추출',
+                    planning: '총 150억 원(300개사), 일괄 5,000만 원, 100% 전액보증 및 보증료 전면 면제 초안(Plan A) 발제',
+                    audit: '90% 부분보증 하향, 1차 3,000만+2차 2,000만 분할한도, 사전 컨설팅 조건부 보증료 0.5%p 감면 반영',
+                    operations: '모바일 국세청·마이데이터 스크래핑(서류 5종→1종) 및 현장실사 면제 약식심사(15일→3일) 설계',
+                    secretary: '감사·운영 제약조건을 통합하여 수혜기업 300→500개사 확대 및 부실률 4.2% 이하 통제 최종안 확정',
+                    media: '재단 표준 개조식(□, ○, -, •) 및 수치 대조 공식을 적용하여 맞춤형 산출물 작성 완료'
+                }
             };
         }
 
-        // 초기 누적 과제 4건 (각각 다른 유형, 다른 참여 팀 순서, 다른 산출물 구성을 보여줌!)
         const INITIAL_TASKS = [
-            createDynamicTaskRecord(
-                '2026-04',
-                '2026-10-30',
-                '골목상권 외식업 배달수수료 부담 완화 및 자생력 강화 특례보증 패키지',
-                'pending',
-                analyzeTopicByChiefSecretary('골목상권 외식업 배달수수료 부담 완화 및 자생력 강화 특례보증 패키지'),
-                62,
-                96
-            ),
-            createDynamicTaskRecord(
-                '2026-03',
-                '2026-10-29',
-                '시의회 행정사무감사 대위변제율 급증 지적에 대한 방어 논리 및 Q&A 작성',
-                'pending',
-                analyzeTopicByChiefSecretary('시의회 행정사무감사 대위변제율 급증 지적에 대한 방어 논리 및 Q&A 작성'),
-                68,
-                97
-            ),
-            createDynamicTaskRecord(
-                '2026-02',
-                '2026-10-26',
-                '지점 창구 심사 대기시간 단축을 위한 모바일 마이데이터 서류 간소화 방안',
-                'approved',
-                analyzeTopicByChiefSecretary('지점 창구 심사 대기시간 단축을 위한 모바일 마이데이터 서류 간소화 방안'),
-                65,
-                95
-            ),
-            createDynamicTaskRecord(
-                '2026-01',
-                '2026-10-22',
-                '최근 자영업자 다중채무 연체율 및 배달플랫폼 수수료 언론 동향 브리핑',
-                'approved',
-                analyzeTopicByChiefSecretary('최근 자영업자 다중채무 연체율 및 배달플랫폼 수수료 언론 동향 브리핑'),
-                75,
-                96
-            )
+            createTaskRecord('2026-04', '2026-10-30', '골목상권 외식업 배달수수료 부담 완화 및 자생력 강화 특례보증 패키지', 'pending', analyzeTopicByChiefSecretary('골목상권 외식업 배달수수료 부담 완화 및 자생력 강화 특례보증 패키지')),
+            createTaskRecord('2026-03', '2026-10-29', '시의회 행정사무감사 대위변제율 급증 지적에 대한 방어 논리 및 Q&A', 'pending', analyzeTopicByChiefSecretary('시의회 행정사무감사 대위변제율 급증 지적에 대한 방어 논리 및 Q&A')),
+            createTaskRecord('2026-02', '2026-10-26', '지점 창구 심사 대기시간 단축을 위한 모바일 마이데이터 서류 간소화 방안', 'approved', analyzeTopicByChiefSecretary('지점 창구 심사 대기시간 단축을 위한 모바일 마이데이터 서류 간소화 방안')),
+            createTaskRecord('2026-01', '2026-10-22', '최근 자영업자 다중채무 연체율 및 배달플랫폼 수수료 언론 동향 브리핑', 'approved', analyzeTopicByChiefSecretary('최근 자영업자 다중채무 연체율 및 배달플랫폼 수수료 언론 동향 브리핑'))
         ];
 
-        let tasks = JSON.parse(localStorage.getItem('scgf_tasks_v3') || 'null') || INITIAL_TASKS;
-        let selectedTaskId = tasks[0].id;
-        let draftRoutingPlan = null;
+        let tasks = JSON.parse(localStorage.getItem('scgf_clean_tasks_v1') || 'null') || INITIAL_TASKS;
 
         function saveTasks() {
-            localStorage.setItem('scgf_tasks_v3', JSON.stringify(tasks));
+            localStorage.setItem('scgf_clean_tasks_v1', JSON.stringify(tasks));
         }
 
-        function getSelectedTask() {
-            return tasks.find(t => t.id === selectedTaskId) || tasks[0];
-        }
-
-        // ═══════════ 4. 메인 뷰 전환 ═══════════
+        // ═══════════ 메인 탭 전환 ═══════════
         function switchMainView(viewKey) {
             currentMainView = viewKey;
             ['dashboard', 'rooms', 'archive'].forEach(v => {
@@ -889,629 +738,577 @@
                 const btn = document.getElementById('navTab-' + v);
                 if (v === viewKey) {
                     el.classList.remove('hidden');
-                    btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all bg-blue-600 text-white';
+                    btn.className = 'px-4 py-1.5 rounded-lg text-sm font-bold transition-all bg-white text-accent shadow-sm';
                 } else {
                     el.classList.add('hidden');
-                    btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all text-slate-300 hover:text-white';
+                    btn.className = 'px-4 py-1.5 rounded-lg text-sm font-bold transition-all text-slate-600 hover:text-slate-900';
                 }
             });
-
             if (viewKey === 'dashboard') renderDashboard();
-            if (viewKey === 'rooms') renderTeamRoom();
+            if (viewKey === 'rooms') renderRoomsView();
             if (viewKey === 'archive') renderArchiveView();
         }
 
-        // ═══════════ 5. VIEW 1: 종합 현황판 & 비서실장 동적 프로세스 편성 UI ═══════════
-        function renderTopTeamCards() {
-            const order = ['secretary', 'research', 'planning', 'audit', 'operations', 'media'];
-            const grid = document.getElementById('topTeamCardsGrid');
-            grid.innerHTML = order.map(k => {
+        // ═══════════ [탭 1] 현황판 렌더링 ═══════════
+        function renderDashboard() {
+            document.getElementById('statTotalTasks').textContent = tasks.length;
+            document.getElementById('statPendingTasks').textContent = tasks.filter(t => t.status === 'pending').length;
+            document.getElementById('statApprovedTasks').textContent = tasks.filter(t => t.status === 'approved').length;
+
+            // 상단 6개 팀 미니 카드 (군더더기 없이 팀명과 상태만 심플하게 표시)
+            const teamOrder = ['secretary', 'research', 'planning', 'audit', 'operations', 'media'];
+            document.getElementById('topTeamCards').innerHTML = teamOrder.map(k => {
                 const cfg = teamConfigs[k];
-                const shortModel = cfg.model.split(' ')[0];
                 return `
-                    <button onclick="openTeamRoom('${k}')"
-                        class="p-2.5 rounded-xl bg-slate-50 hover:bg-blue-50/70 border border-slate-200 hover:border-blue-300 text-left transition-all group">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-extrabold text-slate-800 group-hover:text-blue-700">${cfg.shortName}</span>
-                            <span class="text-[10px] text-slate-400 group-hover:text-blue-600">⚙️설정</span>
+                    <button onclick="goToTeamRoom('${k}')"
+                        class="bg-white rounded-xl p-3.5 border border-border shadow-sm hover:border-blue-400 flex flex-col justify-between text-left transition-all">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-sm font-extrabold text-primary whitespace-nowrap">${cfg.name}</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                         </div>
-                        <div class="text-[10px] font-mono text-blue-700 font-bold mt-1 truncate">${shortModel}</div>
-                        <div class="text-[10px] text-slate-500 mt-0.5">데이터셋 ${cfg.datasetIds.length}개 연결</div>
+                        <div class="text-xs font-semibold text-emerald-600 mt-2">대기중</div>
                     </button>
                 `;
             }).join('');
-        }
 
-        function fillExampleTopic(topic) {
-            document.getElementById('newTaskInput').value = topic;
-            previewChiefRouting();
-        }
-
-        function previewChiefRouting() {
-            const topic = document.getElementById('newTaskInput').value.trim();
-            if (!topic) {
-                alert('하달할 과업 주제를 먼저 입력해 주세요.');
-                return;
-            }
-            draftRoutingPlan = analyzeTopicByChiefSecretary(topic);
-            draftRoutingPlan.topic = topic;
-
-            document.getElementById('routingPreviewBox').classList.remove('hidden');
-            document.getElementById('routingCategoryBadge').textContent = draftRoutingPlan.category;
-            document.getElementById('routingReasonText').textContent = draftRoutingPlan.reason;
-
-            renderDraftRoutingControls();
-        }
-
-        function renderDraftRoutingControls() {
-            const allTeamKeys = ['research', 'planning', 'audit', 'operations', 'secretary', 'media'];
-            const teamBox = document.getElementById('routingTeamCheckboxes');
-            teamBox.innerHTML = allTeamKeys.map(k => {
-                const checked = draftRoutingPlan.teamSequence.includes(k);
-                return `
-                    <label class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border cursor-pointer text-[11px] font-bold transition-all ${checked ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-500 border-slate-200'}">
-                        <input type="checkbox" class="hidden" ${checked ? 'checked' : ''} onchange="toggleDraftTeam('${k}')" />
-                        <span>${teamConfigs[k].shortName}</span>
-                    </label>
-                `;
-            }).join('');
-
-            const seqNames = draftRoutingPlan.teamSequence.map((k, idx) => `${idx + 1}. ${teamConfigs[k].shortName}`).join(' ➔ ');
-            document.getElementById('routingPipelinePreview').innerHTML = `실행 순서: <span class="text-blue-700">${seqNames || '팀을 1개 이상 선택하세요'}</span>`;
-
-            const delivBox = document.getElementById('routingDeliverableCheckboxes');
-            delivBox.innerHTML = Object.values(DELIVERABLE_CATALOG).map(d => {
-                const checked = draftRoutingPlan.deliverableKeys.includes(d.key);
-                return `
-                    <label class="inline-flex items-center gap-1 px-2 py-1 rounded-md border cursor-pointer text-[11px] font-bold transition-all ${checked ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-500 border-slate-200'}">
-                        <input type="checkbox" class="hidden" ${checked ? 'checked' : ''} onchange="toggleDraftDeliverable('${d.key}')" />
-                        <span>${d.label}</span>
-                    </label>
-                `;
-            }).join('');
-        }
-
-        function toggleDraftTeam(teamKey) {
-            const idx = draftRoutingPlan.teamSequence.indexOf(teamKey);
-            if (idx >= 0) {
-                if (draftRoutingPlan.teamSequence.length <= 1) return;
-                draftRoutingPlan.teamSequence.splice(idx, 1);
-            } else {
-                draftRoutingPlan.teamSequence.push(teamKey);
-            }
-            renderDraftRoutingControls();
-        }
-
-        function toggleDraftDeliverable(delivKey) {
-            const idx = draftRoutingPlan.deliverableKeys.indexOf(delivKey);
-            if (idx >= 0) {
-                if (draftRoutingPlan.deliverableKeys.length <= 1) return;
-                draftRoutingPlan.deliverableKeys.splice(idx, 1);
-            } else {
-                draftRoutingPlan.deliverableKeys.push(delivKey);
-            }
-            renderDraftRoutingControls();
-        }
-
-        function closeRoutingPreview() {
-            document.getElementById('routingPreviewBox').classList.add('hidden');
-            draftRoutingPlan = null;
-        }
-
-        function executeRoutedTask() {
-            if (!draftRoutingPlan) return;
-            const btn = document.getElementById('executeRoutedTaskBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ 배정된 팀 순차 가동중...';
-
-            setTimeout(() => {
-                const nextNum = String(tasks.length + 1).padStart(2, '0');
-                const today = new Date().toISOString().slice(0, 10);
-                const newTask = createDynamicTaskRecord(
-                    `2026-${nextNum}`,
-                    today,
-                    draftRoutingPlan.topic,
-                    'pending',
-                    draftRoutingPlan,
-                    64,
-                    96
-                );
-                tasks.unshift(newTask);
-                selectedTaskId = newTask.id;
-                currentDocSubTab = newTask.deliverableKeys[0];
-                saveTasks();
-
-                document.getElementById('newTaskInput').value = '';
-                btn.disabled = false;
-                btn.textContent = '🚀 위 프로세스대로 팀 가동 및 산출물 생성';
-                closeRoutingPreview();
-                setTaskTableFilter('all');
-                renderDashboard();
-            }, 350);
-        }
-
-        function renderDashboard() {
-            renderTopTeamCards();
-
-            const totalCount = tasks.length;
-            const pendingCount = tasks.filter(t => t.status === 'pending').length;
-            const approvedCount = tasks.filter(t => t.status === 'approved').length;
-
-            document.getElementById('kpiTotalTasks').textContent = `${totalCount}건`;
-            document.getElementById('kpiPendingTasks').textContent = `${pendingCount}건`;
-            document.getElementById('kpiApprovedTasks').textContent = `${approvedCount}건`;
-
-            const alertBadge = document.getElementById('pendingAlertBadge');
-            alertBadge.textContent = pendingCount > 0 ? `결재 대기 ${pendingCount}건` : '모든 결재 완료';
-
-            const tbody = document.getElementById('dashboardTaskTableBody');
+            // 1단 테이블 렌더링
             const filtered = tasks.filter(t => {
                 if (currentTaskFilter === 'pending') return t.status === 'pending';
                 if (currentTaskFilter === 'approved') return t.status === 'approved';
                 return true;
             });
 
+            const tbody = document.getElementById('dashboardTableBody');
             tbody.innerHTML = filtered.map(t => {
-                const isSelected = t.id === selectedTaskId;
-                const rowBg = isSelected ? 'bg-blue-50/90' : 'hover:bg-slate-50';
                 const statusBadge = t.status === 'pending'
-                    ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800">결재대기</span>`
-                    : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">결재완료</span>`;
-                const seqText = t.teamSequence.map(k => teamConfigs[k]?.shortName.replace(/^[^\s]+\s/, '') || k).join('→');
+                    ? `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 whitespace-nowrap">결재대기</span>`
+                    : `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 whitespace-nowrap">결재완료</span>`;
+
+                const delivButtons = t.deliverableKeys.map(k => {
+                    const meta = DELIVERABLE_CATALOG[k] || { label: k, icon: '📄', btnClass: 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200' };
+                    return `
+                        <button type="button"
+                            onclick="event.stopPropagation(); openTaskDetailModal('${t.id}', '${k}')"
+                            title="${meta.label} 보기"
+                            class="px-2.5 py-1.5 border rounded-lg text-xs font-bold transition-colors flex items-center gap-1 whitespace-nowrap ${meta.btnClass}">
+                            <span>${meta.icon}</span>
+                            <span>${meta.label}</span>
+                        </button>
+                    `;
+                }).join('');
 
                 return `
-                    <tr onclick="selectTaskFromTable('${t.id}')" class="cursor-pointer transition-colors ${rowBg}">
-                        <td class="py-3 px-3 font-mono text-[11px] text-slate-500">#${t.id}<div class="text-[10px] text-slate-400">${t.date.slice(5)}</div></td>
-                        <td class="py-3 px-3">
-                            <div class="flex items-center gap-1.5">
-                                <span class="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold text-[10px] shrink-0">${t.category}</span>
-                                <span class="text-xs font-extrabold text-slate-900 line-clamp-1">${t.topic}</span>
-                            </div>
-                            <div class="text-[11px] text-slate-500 mt-1">🎯 투입 프로세스(${t.teamSequence.length}단계): <b class="text-slate-700">${seqText}</b></div>
-                        </td>
-                        <td class="py-3 px-3 text-center">
-                            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold text-[11px]">${t.deliverableKeys.length}종 생성</span>
-                        </td>
-                        <td class="py-3 px-3 text-center">${statusBadge}</td>
+                    <tr onclick="openTaskDetailModal('${t.id}')" class="row-hover cursor-pointer transition-colors">
+                        <td class="py-4 px-5 whitespace-nowrap">${statusBadge}</td>
+                        <td class="py-4 px-4 text-slate-500 font-medium whitespace-nowrap">${t.date}</td>
+                        <td class="py-4 px-4 font-bold text-primary text-base">${t.topic}</td>
+                        <td class="py-4 px-5 whitespace-nowrap"><div class="flex flex-wrap items-center gap-1.5">${delivButtons}</div></td>
                     </tr>
                 `;
             }).join('');
-
-            renderSelectedTaskRightPanel();
         }
 
-        function selectTaskFromTable(id) {
-            selectedTaskId = id;
-            const task = getSelectedTask();
-            currentDocSubTab = task.deliverableKeys[0];
-            renderDashboard();
-        }
-
-        function setTaskTableFilter(filterKey) {
+        function setTaskFilter(filterKey) {
             currentTaskFilter = filterKey;
             ['all', 'pending', 'approved'].forEach(k => {
-                const btn = document.getElementById('filterBtn-' + k);
+                const btn = document.getElementById('filterChip-' + k);
                 btn.className = (k === filterKey)
-                    ? 'px-2 py-0.5 rounded text-[11px] font-bold bg-slate-900 text-white'
-                    : 'px-2 py-0.5 rounded text-[11px] font-bold text-slate-600 hover:bg-slate-100';
+                    ? 'px-3 py-1 rounded-lg text-xs font-bold bg-accent text-white'
+                    : 'px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100';
             });
             renderDashboard();
         }
 
-        function filterPendingOnly() {
-            setTaskTableFilter('pending');
-            const firstPending = tasks.find(t => t.status === 'pending');
-            if (firstPending) {
-                selectedTaskId = firstPending.id;
-                currentDocSubTab = firstPending.deliverableKeys[0];
-                renderDashboard();
-            }
+        // ═══════════ [모달 1] 과제 산출물 & 진행과정 모달 ═══════════
+        function openTaskDetailModal(taskId, initialTab) {
+            activeModalTaskId = taskId;
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            activeModalTab = initialTab || task.deliverableKeys[0];
+            renderTaskDetailModal();
+
+            const modal = document.getElementById('taskDetailModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
 
-        // 우측 패널 렌더링 (과제별로 다른 팀 배지 & 다른 맞춤형 산출물 탭 렌더링!)
-        function renderSelectedTaskRightPanel() {
-            const task = getSelectedTask();
-            if (!currentDocSubTab || !task.deliverableKeys.includes(currentDocSubTab)) {
-                currentDocSubTab = task.deliverableKeys[0];
-            }
+        function closeTaskDetailModal() {
+            const modal = document.getElementById('taskDetailModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
 
-            document.getElementById('selectedTaskIdBadge').textContent = `#${task.id}`;
-            document.getElementById('selectedTaskCategoryBadge').textContent = task.category;
-            document.getElementById('selectedTaskDate').textContent = task.date;
-            document.getElementById('selectedTaskTitle').textContent = task.topic;
-            document.getElementById('selectedTaskScore').textContent = `완성도 ${task.scoreBefore}점 ➔ ${task.scoreAfter}점`;
+        function renderTaskDetailModal() {
+            const task = tasks.find(t => t.id === activeModalTaskId);
+            if (!task) return;
 
-            const statusBadge = document.getElementById('selectedTaskStatusBadge');
-            const approveBtn = document.getElementById('approveTaskBtn');
+            document.getElementById('modalTaskTitle').textContent = task.topic;
+            document.getElementById('modalTaskDate').textContent = `${task.date} · ${task.category}`;
+
+            const stBadge = document.getElementById('modalTaskStatus');
+            const appBtn = document.getElementById('modalApproveBtn');
             if (task.status === 'pending') {
-                statusBadge.textContent = '결재 대기중';
-                statusBadge.className = 'px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-100 text-amber-800';
-                approveBtn.classList.remove('hidden');
+                stBadge.textContent = '결재대기';
+                stBadge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800';
+                appBtn.classList.remove('hidden');
             } else {
-                statusBadge.textContent = '결재 완료';
-                statusBadge.className = 'px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800';
-                approveBtn.classList.add('hidden');
+                stBadge.textContent = '결재완료';
+                stBadge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800';
+                appBtn.classList.add('hidden');
             }
 
-            // 가동된 팀 순서 칩 표시
-            document.getElementById('selectedTaskPipelineChips').innerHTML = task.teamSequence.map((k, i) => `
-                <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-[11px] font-bold text-slate-800">${i + 1}. ${teamConfigs[k]?.shortName || k}</span>
-                ${i < task.teamSequence.length - 1 ? '<span class="text-slate-400 text-[10px]">➔</span>' : ''}
-            `).join('');
-
-            document.getElementById('selectedTaskSummaryLines').innerHTML = task.summaryLines.map(l => `<p>${l}</p>`).join('');
-
-            // 동적 산출물 탭 버튼 생성 (이 과제에 지정된 산출물만 표시!)
-            const tabsBox = document.getElementById('dynamicDocSubTabs');
-            tabsBox.innerHTML = task.deliverableKeys.map(dKey => {
-                const label = DELIVERABLE_CATALOG[dKey]?.label || dKey;
-                const active = dKey === currentDocSubTab;
+            // 서브탭: 맞춤형 산출물 탭들 + [진행과정] 탭
+            const subTabsEl = document.getElementById('modalSubTabs');
+            const docTabsHtml = task.deliverableKeys.map(k => {
+                const active = activeModalTab === k;
+                const meta = DELIVERABLE_CATALOG[k] || { label: k, icon: '📄' };
                 return `
-                    <button onclick="switchDocSubTab('${dKey}')"
-                        class="px-2.5 py-1 rounded-md text-xs font-extrabold transition-all ${active ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'}">
-                        ${label}
+                    <button onclick="switchModalTab('${k}')"
+                        class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${active ? 'bg-accent text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">
+                        <span>${meta.icon}</span>
+                        <span>${meta.label}</span>
                     </button>
                 `;
             }).join('');
 
-            const allDocs = buildAllDeliverablesHtml(task);
-            document.getElementById('dashboardDocViewer').innerHTML = allDocs[currentDocSubTab] || '';
+            const isStepsActive = activeModalTab === 'steps';
+            const stepsTabHtml = `
+                <button onclick="switchModalTab('steps')"
+                    class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${isStepsActive ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">
+                    진행과정 (${task.teamSequence.length}단계)
+                </button>
+            `;
+
+            subTabsEl.innerHTML = docTabsHtml + stepsTabHtml;
+
+            const bodyEl = document.getElementById('modalBodyContent');
+            if (activeModalTab === 'steps') {
+                bodyEl.innerHTML = buildStepsHtml(task);
+            } else {
+                const docs = buildDeliverablesHtml(task);
+                bodyEl.innerHTML = docs[activeModalTab] || '';
+            }
         }
 
-        function switchDocSubTab(tabKey) {
-            currentDocSubTab = tabKey;
-            renderSelectedTaskRightPanel();
+        function switchModalTab(tabKey) {
+            activeModalTab = tabKey;
+            renderTaskDetailModal();
         }
 
-        function approveCurrentTask() {
-            const task = getSelectedTask();
+        function approveModalTask() {
+            const task = tasks.find(t => t.id === activeModalTaskId);
+            if (!task) return;
             task.status = 'approved';
             saveTasks();
-            renderDashboard();
+            renderTaskDetailModal();
+            if (currentMainView === 'dashboard') renderDashboard();
+            if (currentMainView === 'archive') renderArchiveView();
         }
 
-        // ═══════════ 6. VIEW 2: 팀별 집무실 & 개별 설정 (지침·API·데이터셋) ═══════════
-        function openTeamRoom(roomKey) {
+        function copyModalContent() {
+            const text = document.getElementById('modalBodyContent').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('복사되었습니다.');
+            });
+        }
+
+        // ═══════════ [모달 2] 새 과업 지시 · 비서실장 편성 모달 ═══════════
+        function openRoutingModal() {
+            const input = document.getElementById('newTaskInput');
+            const topic = input.value.trim();
+            if (!topic) {
+                alert('과업 주제를 입력해 주세요.');
+                return;
+            }
+            draftPlan = analyzeTopicByChiefSecretary(topic);
+            draftPlan.topic = topic;
+
+            document.getElementById('routingModalTopic').textContent = topic;
+            renderRoutingModalControls();
+
+            const modal = document.getElementById('routingModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeRoutingModal() {
+            const modal = document.getElementById('routingModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function renderRoutingModalControls() {
+            const allTeams = ['research', 'planning', 'audit', 'operations', 'secretary', 'media'];
+            document.getElementById('routingTeamButtons').innerHTML = allTeams.map(k => {
+                const active = draftPlan.teamSequence.includes(k);
+                return `
+                    <button type="button" onclick="toggleDraftTeam('${k}')"
+                        class="px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${active ? 'bg-accent text-white border-accent' : 'bg-slate-50 text-slate-500 border-border'}">
+                        ${teamConfigs[k].name}
+                    </button>
+                `;
+            }).join('');
+
+            const seqStr = draftPlan.teamSequence.map((k, i) => `${i + 1}. ${teamConfigs[k].name}`).join(' → ');
+            document.getElementById('routingSequenceText').textContent = `순서: ${seqStr}`;
+
+            document.getElementById('routingDelivButtons').innerHTML = Object.values(DELIVERABLE_CATALOG).map(d => {
+                const active = draftPlan.deliverableKeys.includes(d.key);
+                return `
+                    <button type="button" onclick="toggleDraftDeliv('${d.key}')"
+                        class="px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${active ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-50 text-slate-500 border-border'}">
+                        <span>${d.icon}</span>
+                        <span>${d.label}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function toggleDraftTeam(k) {
+            const idx = draftPlan.teamSequence.indexOf(k);
+            if (idx >= 0) {
+                if (draftPlan.teamSequence.length <= 1) return;
+                draftPlan.teamSequence.splice(idx, 1);
+            } else {
+                draftPlan.teamSequence.push(k);
+            }
+            renderRoutingModalControls();
+        }
+
+        function toggleDraftDeliv(k) {
+            const idx = draftPlan.deliverableKeys.indexOf(k);
+            if (idx >= 0) {
+                if (draftPlan.deliverableKeys.length <= 1) return;
+                draftPlan.deliverableKeys.splice(idx, 1);
+            } else {
+                draftPlan.deliverableKeys.push(k);
+            }
+            renderRoutingModalControls();
+        }
+
+        function confirmAndRunTask() {
+            if (!draftPlan) return;
+            const nextNum = String(tasks.length + 1).padStart(2, '0');
+            const today = new Date().toISOString().slice(0, 10);
+            const newTask = createTaskRecord(`2026-${nextNum}`, today, draftPlan.topic, 'pending', draftPlan);
+            tasks.unshift(newTask);
+            saveTasks();
+
+            document.getElementById('newTaskInput').value = '';
+            closeRoutingModal();
+            setTaskFilter('all');
+            renderDashboard();
+            openTaskDetailModal(newTask.id);
+        }
+
+        // ═══════════ [탭 2] 팀 집무실 (1단 구성 + 설정 모달) ═══════════
+        function goToTeamRoom(roomKey) {
             currentRoomKey = roomKey;
             switchMainView('rooms');
         }
 
         function selectRoom(roomKey) {
             currentRoomKey = roomKey;
-            renderTeamRoom();
+            renderRoomsView();
         }
 
-        function renderTeamRoom() {
+        function renderRoomsView() {
             ['secretary', 'research', 'planning', 'audit', 'operations', 'media'].forEach(k => {
-                const btn = document.getElementById('roomTab-' + k);
+                const btn = document.getElementById('roomBtn-' + k);
                 btn.className = (k === currentRoomKey)
-                    ? 'px-3.5 py-2 rounded-lg text-xs font-extrabold bg-blue-600 text-white transition-all'
-                    : 'px-3.5 py-2 rounded-lg text-xs font-extrabold text-slate-600 hover:bg-slate-100 transition-all';
+                    ? 'px-4 py-2 rounded-xl text-sm font-bold transition-all bg-accent text-white'
+                    : 'px-4 py-2 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-100';
             });
 
             const cfg = teamConfigs[currentRoomKey];
-            document.getElementById('roomRoleTag').textContent = cfg.roleTag;
-            document.getElementById('roomTitle').textContent = cfg.name;
-            document.getElementById('roomApiProviderSelect').value = cfg.apiProvider;
-            document.getElementById('roomModelSelect').value = cfg.model;
-            document.getElementById('roomTempSelect').value = cfg.temp;
-            document.getElementById('roomCustomApiKey').value = cfg.customKey || '';
-            document.getElementById('roomSubtitleInput').value = cfg.subtitle;
-            document.getElementById('roomGuidelinesTextarea').value = cfg.guidelines;
+            document.getElementById('roomHeaderName').textContent = cfg.name;
+            document.getElementById('roomHeaderModel').textContent = `${cfg.apiProvider} · ${cfg.model}`;
+            document.getElementById('roomHeaderSubtitle').textContent = cfg.subtitle;
 
-            // 참고 데이터셋 체크박스 목록 렌더링
-            const dsBox = document.getElementById('roomDatasetList');
-            dsBox.innerHTML = datasets.map(ds => {
+            const dsNames = datasets.filter(d => cfg.datasetIds.includes(d.id)).map(d => `
+                <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">${d.name}</span>
+            `).join('');
+            document.getElementById('roomHeaderDatasets').innerHTML = dsNames;
+
+            // 이 팀이 참여한 과제 내역 1단 테이블
+            const tbody = document.getElementById('roomTasksTableBody');
+            tbody.innerHTML = tasks.map(t => {
+                const stepIdx = t.teamSequence.indexOf(currentRoomKey);
+                const stepBadge = stepIdx >= 0
+                    ? `<span class="px-2.5 py-1 rounded-lg bg-blue-50 text-accent text-xs font-bold">${stepIdx + 1}단계 투입</span>`
+                    : `<span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-400 text-xs font-semibold">미투입</span>`;
+                const summary = stepIdx >= 0 ? (t.teamSummaries[currentRoomKey] || '') : '해당 과업 유형에서는 생략됨';
+
+                return `
+                    <tr onclick="openTaskDetailModal('${t.id}', 'steps')" class="row-hover cursor-pointer transition-colors">
+                        <td class="py-4 px-5 text-slate-500">${t.date}</td>
+                        <td class="py-4 px-4 font-bold text-primary">${t.topic}</td>
+                        <td class="py-4 px-4 text-center">${stepBadge}</td>
+                        <td class="py-4 px-5 text-slate-700">${summary}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // 팀 설정 모달 열기/저장
+        function openTeamSettingsModal() {
+            const cfg = teamConfigs[currentRoomKey];
+            document.getElementById('settingsModalTitle').textContent = `${cfg.name} 설정`;
+            document.getElementById('cfgApiProvider').value = cfg.apiProvider;
+            document.getElementById('cfgModel').value = cfg.model;
+            document.getElementById('cfgCustomKey').value = cfg.customKey || '';
+            document.getElementById('cfgSubtitle').value = cfg.subtitle;
+            document.getElementById('cfgGuidelines').value = cfg.guidelines;
+
+            renderModalDatasetCheckboxes();
+
+            const modal = document.getElementById('teamSettingsModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function renderModalDatasetCheckboxes() {
+            const cfg = teamConfigs[currentRoomKey];
+            document.getElementById('cfgDatasetList').innerHTML = datasets.map(ds => {
                 const checked = cfg.datasetIds.includes(ds.id);
                 return `
-                    <label class="flex items-start gap-2.5 p-2.5 rounded-lg border cursor-pointer transition-all ${checked ? 'bg-blue-50/50 border-blue-300' : 'bg-slate-50 border-slate-200 opacity-70'}">
-                        <input type="checkbox" class="mt-0.5 w-4 h-4 accent-blue-600" ${checked ? 'checked' : ''}
-                            onchange="toggleRoomDataset('${ds.id}')" />
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center justify-between">
-                                <span class="font-extrabold text-slate-900">${ds.name}</span>
-                                <span class="text-[10px] font-bold ${checked ? 'text-emerald-600' : 'text-slate-400'}">${checked ? '● 연결됨' : '미연결'}</span>
+                    <label class="flex items-center justify-between p-3 rounded-xl border cursor-pointer ${checked ? 'bg-blue-50/50 border-blue-300' : 'bg-slate-50 border-border'}">
+                        <div class="flex items-center gap-2.5">
+                            <input type="checkbox" class="w-4 h-4 accent-blue-600" ${checked ? 'checked' : ''}
+                                onchange="toggleDatasetInModal('${ds.id}')" />
+                            <div>
+                                <div class="text-sm font-bold text-primary">${ds.name}</div>
+                                <div class="text-xs text-muted">${ds.desc}</div>
                             </div>
-                            <div class="text-[11px] text-slate-500 truncate">${ds.desc}</div>
                         </div>
                     </label>
                 `;
             }).join('');
-
-            // 우측 과제 선택 드롭다운
-            const selectEl = document.getElementById('roomTaskSelect');
-            selectEl.innerHTML = tasks.map(t => `
-                <option value="${t.id}" ${t.id === selectedTaskId ? 'selected' : ''}>[#${t.id}] ${t.topic}</option>
-            `).join('');
-
-            renderRoomTaskOutput();
         }
 
-        function toggleRoomDataset(dsId) {
+        function toggleDatasetInModal(dsId) {
             const cfg = teamConfigs[currentRoomKey];
             const idx = cfg.datasetIds.indexOf(dsId);
-            if (idx >= 0) {
-                cfg.datasetIds.splice(idx, 1);
-            } else {
-                cfg.datasetIds.push(dsId);
-            }
-            saveTeamConfigs();
-            renderTeamRoom();
+            if (idx >= 0) cfg.datasetIds.splice(idx, 1);
+            else cfg.datasetIds.push(dsId);
+            renderModalDatasetCheckboxes();
         }
 
-        function addCustomDatasetToRoom() {
-            const nameInput = document.getElementById('newDatasetNameInput');
-            const urlInput = document.getElementById('newDatasetUrlInput');
-            const name = nameInput.value.trim();
-            const url = urlInput.value.trim() || 'custom://dataset';
-            if (!name) {
-                alert('추가할 데이터셋 이름을 입력해 주세요.');
-                return;
-            }
-            const newId = 'ds_custom_' + Date.now();
-            datasets.push({
-                id: newId,
-                name,
-                desc: `사용자 추가 데이터셋 (${url})`,
-                url
-            });
+        function addDatasetInModal() {
+            const nameEl = document.getElementById('newDsName');
+            const urlEl = document.getElementById('newDsUrl');
+            const name = nameEl.value.trim();
+            if (!name) return;
+            const newId = 'ds_' + Date.now();
+            datasets.push({ id: newId, name, desc: urlEl.value.trim() || '사용자 추가 데이터셋' });
             teamConfigs[currentRoomKey].datasetIds.push(newId);
-            saveTeamConfigs();
-            nameInput.value = '';
-            urlInput.value = '';
-            renderTeamRoom();
+            nameEl.value = '';
+            urlEl.value = '';
+            renderModalDatasetCheckboxes();
         }
 
-        function saveCurrentRoomConfig() {
+        function saveTeamSettingsFromModal() {
             const cfg = teamConfigs[currentRoomKey];
-            cfg.apiProvider = document.getElementById('roomApiProviderSelect').value;
-            cfg.model = document.getElementById('roomModelSelect').value;
-            cfg.temp = document.getElementById('roomTempSelect').value;
-            cfg.customKey = document.getElementById('roomCustomApiKey').value.trim();
-            cfg.subtitle = document.getElementById('roomSubtitleInput').value.trim();
-            cfg.guidelines = document.getElementById('roomGuidelinesTextarea').value;
+            cfg.apiProvider = document.getElementById('cfgApiProvider').value;
+            cfg.model = document.getElementById('cfgModel').value;
+            cfg.customKey = document.getElementById('cfgCustomKey').value.trim();
+            cfg.subtitle = document.getElementById('cfgSubtitle').value.trim();
+            cfg.guidelines = document.getElementById('cfgGuidelines').value;
             saveTeamConfigs();
-            alert(`✅ [${cfg.shortName}]의 역할·업무지침, 배정 AI 모델(${cfg.model.split(' ')[0]}), 참고 데이터셋(${cfg.datasetIds.length}개) 설정이 저장되었습니다!`);
+            closeTeamSettingsModal();
+            renderRoomsView();
         }
 
-        function resetRoomGuidelines() {
-            if (!confirm('이 팀의 설정과 업무지침을 초기 기본값으로 복원하시겠습니까?')) return;
+        function resetCurrentTeamConfig() {
             teamConfigs[currentRoomKey] = JSON.parse(JSON.stringify(DEFAULT_TEAM_CONFIGS[currentRoomKey]));
             saveTeamConfigs();
-            renderTeamRoom();
+            openTeamSettingsModal();
+            renderRoomsView();
         }
 
-        function renderRoomTaskOutput() {
-            const selectEl = document.getElementById('roomTaskSelect');
-            if (selectEl && selectEl.value) selectedTaskId = selectEl.value;
-            const task = getSelectedTask();
-            const participated = task.teamSequence.includes(currentRoomKey);
-            const stepOrder = task.teamSequence.indexOf(currentRoomKey) + 1;
+        function closeTeamSettingsModal() {
+            const modal = document.getElementById('teamSettingsModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
 
-            if (!participated) {
-                document.getElementById('roomDeliverableBox').innerHTML = `
-                    <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900">
-                        <b>ℹ️ 비서실장 동적 편성 안내:</b><br>
-                        선택하신 <b>[#${task.id} ${task.topic}]</b> 과제는 <b>[${task.category}]</b> 유형으로 분류되어, 비서실장이 <b>[${teamConfigs[currentRoomKey].shortName}]</b> 단계를 생략하고 필수 팀만 가동했습니다.
-                    </div>
+        // ═══════════ [탭 3] 히스토리 (1단 전체 폭 테이블) ═══════════
+        function renderArchiveView() {
+            const q = (document.getElementById('archiveSearchInput')?.value || '').trim().toLowerCase();
+            const filtered = tasks.filter(t => !q || t.topic.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
+            document.getElementById('archiveTotalBadge').textContent = `${filtered.length}건`;
+
+            document.getElementById('archiveTableBody').innerHTML = filtered.map(t => {
+                const statusBadge = t.status === 'pending'
+                    ? `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 whitespace-nowrap">결재대기</span>`
+                    : `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 whitespace-nowrap">결재완료</span>`;
+
+                const delivButtons = t.deliverableKeys.map(k => {
+                    const meta = DELIVERABLE_CATALOG[k] || { label: k, icon: '📄', btnClass: 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200' };
+                    return `
+                        <button type="button"
+                            onclick="event.stopPropagation(); openTaskDetailModal('${t.id}', '${k}')"
+                            title="${meta.label} 보기"
+                            class="px-2.5 py-1.5 border rounded-lg text-xs font-bold transition-colors flex items-center gap-1 whitespace-nowrap ${meta.btnClass}">
+                            <span>${meta.icon}</span>
+                            <span>${meta.label}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                return `
+                    <tr onclick="openTaskDetailModal('${t.id}', 'steps')" class="row-hover cursor-pointer transition-colors">
+                        <td class="py-4 px-5 font-mono text-xs text-slate-500 whitespace-nowrap">#${t.id}</td>
+                        <td class="py-4 px-4 text-slate-500 whitespace-nowrap">${t.date}</td>
+                        <td class="py-4 px-4 whitespace-nowrap"><span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">${t.category}</span></td>
+                        <td class="py-4 px-4 font-bold text-primary text-base">${t.topic}</td>
+                        <td class="py-4 px-4 whitespace-nowrap"><div class="flex flex-wrap items-center gap-1.5">${delivButtons}</div></td>
+                        <td class="py-4 px-5 text-center whitespace-nowrap">${statusBadge}</td>
+                    </tr>
                 `;
-                return;
-            }
+            }).join('');
+        }
 
-            document.getElementById('roomDeliverableBox').innerHTML = `
-                <div class="flex items-center justify-between pb-2 border-b border-slate-200 text-[11px] text-slate-500">
-                    <span>대상 과제: <b class="text-slate-800">[#${task.id}] ${task.topic}</b></span>
-                    <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">투입 순서: STEP ${stepOrder} / ${task.teamSequence.length}</span>
+        // ═══════════ 모달 본문 빌더 (산출물 & 단계별 과정) ═══════════
+        function buildStepsHtml(task) {
+            return `
+                <h1>[${task.topic}] 단계별 처리 내역</h1>
+                <div class="space-y-4 mt-4">
+                    ${task.teamSequence.map((k, idx) => {
+                        const cfg = teamConfigs[k];
+                        return `
+                            <div class="p-4 rounded-xl bg-slate-50 border border-border">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-sm font-extrabold text-accent">STEP ${idx + 1} · ${cfg.name}</span>
+                                    <span class="text-xs text-muted">${cfg.model}</span>
+                                </div>
+                                <p class="text-sm text-slate-800">${task.teamSummaries[k] || ''}</p>
+                            </div>
+                        `;
+                    }).join('')}
                 </div>
-                <div class="pt-2">${task.teamOutputs[currentRoomKey] || ''}</div>
             `;
         }
 
-        // ═══════════ 7. VIEW 3: 과제 히스토리 & 동적 단계별 처리 상세 ═══════════
-        function openTaskStepDetail(id) {
-            selectedTaskId = id;
-            switchMainView('archive');
-        }
-
-        function goToDashboardWithTask(id) {
-            selectedTaskId = id;
-            switchMainView('dashboard');
-        }
-
-        function renderArchiveView() {
-            document.getElementById('archiveCountBadge').textContent = `총 ${tasks.length}건`;
-            const listEl = document.getElementById('archiveTaskList');
-            listEl.innerHTML = tasks.map(t => {
-                const isSel = t.id === selectedTaskId;
-                const badge = t.status === 'pending'
-                    ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800">결재대기</span>`
-                    : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">결재완료</span>`;
-                return `
-                    <div onclick="selectArchiveTask('${t.id}')"
-                        class="p-4 cursor-pointer transition-colors ${isSel ? 'bg-blue-50 border-l-4 border-blue-600' : 'hover:bg-slate-50'}">
-                        <div class="flex items-center justify-between">
-                            <span class="font-mono text-[11px] font-bold text-slate-500">#${t.id} · ${t.category}</span>
-                            ${badge}
-                        </div>
-                        <div class="text-xs font-extrabold text-slate-900 mt-1">${t.topic}</div>
-                        <div class="text-[11px] text-slate-500 mt-1">참여 ${t.teamSequence.length}개 팀 · 산출물 ${t.deliverableKeys.length}종</div>
-                    </div>
-                `;
-            }).join('');
-
-            const task = getSelectedTask();
-            document.getElementById('archiveDetailId').textContent = `#${task.id}`;
-            document.getElementById('archiveDetailCategory').textContent = task.category;
-            document.getElementById('archiveDetailTitle').textContent = task.topic;
-            document.getElementById('archiveDetailRoutingReason').textContent = `🎯 비서실장 편성 판단: ${task.routingReason}`;
-
-            const stEl = document.getElementById('archiveDetailStatus');
-            stEl.textContent = task.status === 'pending' ? '결재 대기중' : '결재 완료';
-            stEl.className = task.status === 'pending'
-                ? 'px-2 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800'
-                : 'px-2 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800';
-
-            // 이 과제에 실제로 투입된 팀 순서(teamSequence)대로만 단계 카드 렌더링!
-            document.getElementById('archiveStepsContainer').innerHTML = task.teamSequence.map((teamKey, idx) => {
-                const cfg = teamConfigs[teamKey];
-                return `
-                    <div class="bg-white rounded-xl p-4 border border-slate-200 border-l-4 border-l-blue-600 shadow-sm text-xs">
-                        <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
-                            <span class="font-extrabold text-blue-700">STEP ${idx + 1} · ${cfg.shortName}</span>
-                            <span class="font-mono text-[10px] text-slate-400">모델: ${cfg.model.split(' ')[0]} · 연결 데이터셋 ${cfg.datasetIds.length}개</span>
-                        </div>
-                        ${task.teamOutputs[teamKey] || ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function selectArchiveTask(id) {
-            selectedTaskId = id;
-            renderArchiveView();
-        }
-
-        // ═══════════ 8. 9종 맞춤형 산출물 템플릿 생성기 ═══════════
-        function buildAllDeliverablesHtml(task) {
-            const { topic, date, scoreBefore, scoreAfter, category } = task;
-
+        function buildDeliverablesHtml(task) {
+            const { topic, date, category } = task;
             return {
                 official_report: `
                     <h1>[${topic}] 추진계획 보고서</h1>
-                    <div class="text-xs text-slate-500 mb-3 flex justify-between bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                        <span><b>과업유형:</b> ${category}</span>
-                        <span><b>보고일자:</b> ${date}</span>
-                    </div>
                     <h2>Ⅰ. 추진 배경 및 필요성</h2>
-                    <p class="font-bold mt-2">□ 대내외 여건 및 핵심 시사점 <span class="text-xs font-normal text-blue-600">[출처: AI 뉴스비서 · 미팅코파일럿]</span></p>
-                    <ul class="list-none pl-2 space-y-1 mt-1">
-                        <li>○ 고금리 및 수수료·원가 부담으로 관내 소상공인 영업이익이 전년 대비 <b>18.5% 감소</b>하고 지역신보 평균 대위변제율이 <b>4.8%</b>에 달함.</li>
-                        <li>○ 주간회의 센터장 지시사항("단발성 지원 지양·사전 컨설팅 패키지화") 및 센터 비금융 컨설팅 진도율(<b>당초 72.0% → 목표 100.0%</b>) 달성을 위한 정교한 제도 설계 필요.</li>
+                    <p class="font-bold mt-2">□ 대외 여건 및 소상공인 경영 현황 <span class="text-xs font-normal text-blue-600">[출처: AI 뉴스비서 ${date}]</span></p>
+                    <ul class="list-none pl-2 space-y-1.5 mt-1">
+                        <li>○ 고금리 및 수수료·원가 부담 가중으로 관내 소상공인 실질 영업이익이 전년 대비 <b>18.5% 감소</b>하고 지역신보 평균 대위변제율이 <b>4.8%</b>에 달함.</li>
+                        <li>○ 단순 일회성 보증 시 3년 생존율은 <b>42.1%</b>에 그치나, 사전 경영컨설팅 병행 이수 시 3년 생존율이 <b>74.5%(+32.4%p)</b>로 상승함.</li>
                     </ul>
-                    <h2>Ⅱ. 세부 추진 내용 (최종 합의안)</h2>
+                    <p class="font-bold mt-4">□ 센터 내부 경영 기조 및 진도율 현황 <span class="text-xs font-normal text-purple-600">[출처: 미팅 코파일럿 지식DB]</span></p>
+                    <ul class="list-none pl-2 space-y-1.5 mt-1">
+                        <li>○ <b>센터장 지시사항:</b> 단발성 자금 지원을 지양하고 재단 비금융 컨설팅과 결합된 <b>'선(先) 코칭 - 후(後) 우대보증' 패키지</b>로 설계.</li>
+                        <li>○ <b>진도율 보완:</b> 보증 공급 진도율(88.5%) 대비 비금융 컨설팅 진도율(<b>당초 72.0% → 목표 100.0%</b>) 달성을 위한 비대면 패스트트랙 결합 필요.</li>
+                    </ul>
+                    <h2>Ⅱ. 핵심 지원 조건 (최종 합의안)</h2>
                     <ul class="list-none pl-2 space-y-1.5 mt-2">
-                        <li>○ <b>지원규모:</b> 총 <b>150억 원</b> (수혜 목표: <b>당초 300개사 → 최종 500개사, +66.7% 확대</b>)</li>
-                        <li>○ <b>지원한도 및 비율:</b> <b>1차 3,000만 원 + 성실상환 시 2차 2,000만 원 분할</b> / <b>90% 부분보증</b> / 사전 컨설팅 이수 시 <b>보증료 0.5%p 감면</b></li>
+                        <li>○ <b>공급규모:</b> 총 <b>150억 원</b> (수혜 기업: <b>당초 300개사 → 최종 500개사, +66.7% 확대</b>)</li>
+                        <li>○ <b>보증한도:</b> <b>당초 일괄 5,000만 원 → 최종 단계별 분할 한도</b> (1차 3,000만 원 + 1년 성실상환 시 2차 2,000만 원 추가)</li>
+                        <li>○ <b>보증비율 및 우대:</b> <b>당초 100% → 최종 90% 부분보증</b> / 사전 컨설팅 수료 시 <b>보증료 0.5%p 감면(0.8%→0.3%)</b> 및 이차보전 <b>연 2.0%p</b></li>
                         <li>○ <b>창구 디지털 심사:</b> 모바일 국세청·마이데이터 자동 스크래핑(<b>제출서류 당초 5종 → 최종 1종</b>) 및 약식심사(<b>처리기한 당초 15일 → 최종 3일</b>)</li>
                     </ul>
                 `,
                 onepager: `
-                    <h1>[센터장 직보고 1장 요약서] ${topic}</h1>
+                    <h1>[1장 요약서] ${topic}</h1>
                     <table class="doc-table">
                         <tbody>
-                            <tr><th style="width:24%">1. 과업 분류</th><td><b>${category}</b> (비서실장 동적 편성: ${task.teamSequence.length}개 팀 투입)</td></tr>
-                            <tr><th>2. 핵심 배경</th><td>소상공인 영업이익 18.5% 감소 및 지역신보 대위변제율(4.8%) 상승 대응 + 센터장 '컨설팅 패키지화' 지시 이행</td></tr>
-                            <tr><th>3. 핵심 결론</th><td>• 수혜 대상: <b>당초 300개사 → 최종 500개사 (+66.7%)</b> / 90% 부분보증 및 단계별 한도로 부실률 <b>4.2% 이하 통제</b><br>• 창구 심사: 모바일 마이데이터 스크래핑으로 <b>서류 5종 → 1종</b>, <b>심사기한 15일 → 3일 단축</b></td></tr>
+                            <tr><th style="width:24%">1. 추진 배경</th><td>소상공인 영업이익 18.5% 감소 및 대위변제율(4.8%) 상승 대응 + 센터장 '컨설팅 패키지화' 지시 이행</td></tr>
+                            <tr><th>2. 지원 규모·대상</th><td>총 <b>150억 원</b> / 사전 컨설팅 이수 소상공인 <b>500개사 (당초 300개사 대비 +200개사 확대)</b></td></tr>
+                            <tr><th>3. 핵심 지원 조건</th><td>• 한도: 일괄 5천만 → <b>1차 3,000만 + 2차 2,000만 분할</b><br>• 보증비율: 100% → <b>90% 부분보증</b> / 보증료 <b>0.5%p 감면</b> / 이차보전 <b>2.0%p</b></td></tr>
+                            <tr><th>4. 창구 심사 혁신</th><td>모바일 마이데이터 스크래핑으로 <b>서류 5종 → 1종</b>, 약식심사로 <b>처리기한 15일 → 3일 단축</b></td></tr>
                         </tbody>
                     </table>
                 `,
                 diff_table: `
-                    <h1>Plan A (초안 ${scoreBefore}점) ➔ Plan B (최종 ${scoreAfter}점) 품질개선 대조표</h1>
+                    <h1>초안(Plan A) 대비 최종안(Plan B) 조정 대조표</h1>
                     <table class="doc-table">
-                        <thead><tr><th>항목</th><th>기획팀 초안 (Plan A)</th><th>감사팀·운영팀 보완 요구</th><th>최종 채택안 (Plan B)</th></tr></thead>
+                        <thead><tr><th>항목</th><th>기획팀 초안 (Plan A)</th><th>감사팀 · 운영팀 보완 사항</th><th>최종 확정안 (Plan B)</th></tr></thead>
                         <tbody>
-                            <tr><td><b>보증비율</b></td><td>100% 전액보증</td><td>[감사팀] 대위변제율 7.2% 급증 위험</td><td><b>당초 100% → 최종 90% 부분보증</b></td></tr>
-                            <tr><td><b>업체당 한도</b></td><td>일괄 5,000만 원</td><td>[감사팀] 초기 부실 노출 축소 필요</td><td><b>1차 3,000만 + 2차 2,000만 분할 (500개사)</b></td></tr>
-                            <tr><td><b>보증료 감면</b></td><td>전 업체 100% 면제</td><td>[감사팀] 과거 기각 사유(예산 고갈)</td><td><b>사전 컨설팅 수료 조건부 0.5%p 감면</b></td></tr>
-                            <tr><td><b>창구 심사</b></td><td>대면 서류 5종·15일</td><td>[운영팀] 창구 심사역 과부하 해소</td><td><b>모바일 스크래핑(서류 1종)·약식심사(3일)</b></td></tr>
+                            <tr><td><b>보증비율</b></td><td>100% 전액보증</td><td>[감사팀] 대위변제율 급증 위험 통제</td><td><b>당초 100% → 최종 90% 부분보증</b></td></tr>
+                            <tr><td><b>업체당 한도</b></td><td>일괄 5,000만 원</td><td>[감사팀] 초기 부실 노출 축소</td><td><b>1차 3,000만 + 2차 2,000만 분할 (500개사)</b></td></tr>
+                            <tr><td><b>보증료 감면</b></td><td>전 업체 100% 면제</td><td>[감사팀] 예산 조기 고갈 및 도덕적 해이 차단</td><td><b>사전 컨설팅 수료 조건부 0.5%p 감면</b></td></tr>
+                            <tr><td><b>창구 심사</b></td><td>대면 서류 5종 · 15일</td><td>[운영팀] 창구 심사역 과부하 해소</td><td><b>모바일 스크래핑(서류 1종) · 약식심사(3일)</b></td></tr>
                         </tbody>
                     </table>
                 `,
                 pt_press: `
-                    <h1>간부회의 PT 구성안 (5슬라이드) & 언론 보도자료</h1>
-                    <h2>Part 1. PT 슬라이드 핵심 구성</h2>
-                    <ul class="list-disc pl-4 space-y-1 mt-1">
+                    <h1>발표자료 구성안 & 보도자료</h1>
+                    <h2>1. PT 슬라이드 구성 (5장)</h2>
+                    <ul class="list-disc pl-5 space-y-1.5 mt-2">
                         <li><b>Slide 1:</b> 「${topic}」 — 수혜 500개사(+66.7%), 심사 3일(-80%), 3년 생존율 74.5%</li>
-                        <li><b>Slide 2~3:</b> 대외 위기 시그널 및 기획·감사·운영 3각 균형 제도 설계</li>
-                        <li><b>Slide 4~5:</b> 모바일 스크래핑 창구 혁신 및 시의회 감사 선제 방어 로드맵</li>
+                        <li><b>Slide 2:</b> 대외 영업이익 감소(-18.5%) vs 사전 컨설팅 병행 시 생존율(+32.4%p) 효과</li>
+                        <li><b>Slide 3:</b> 기획(혜택) + 감사(90% 부분보증·분할한도) + 운영(비대면 3일 심사) 균형 설계</li>
+                        <li><b>Slide 4:</b> 모바일 마이데이터 스크래핑(서류 5종→1종) 패스트트랙 절차</li>
+                        <li><b>Slide 5:</b> 센터 컨설팅 진도율 72%→100% 달성 및 리스크 관리 로드맵</li>
                     </ul>
-                    <h2>Part 2. 보도자료 초안</h2>
-                    <p class="mt-1"><b>제목:</b> 서울신용보증재단, '${topic}' 본격 시행… 비대면 패스트트랙으로 3일 내 신속 지원</p>
-                `,
-                process_asis_tobe: `
-                    <h1>[창구 업무절차 개선표] 현행(As-Is) ➔ 개선(To-Be) 대조</h1>
-                    <table class="doc-table">
-                        <thead><tr><th>심사 단계</th><th>현행 방식 (As-Is)</th><th>개선 방식 (To-Be · 운영팀 설계)</th><th>기대 효과</th></tr></thead>
-                        <tbody>
-                            <tr><td><b>1. 서류 접수</b></td><td>지점 방문 대면 제출 (종이 5종)</td><td><b>모바일 앱 국세청·마이데이터 자동 스크래핑 (1종)</b></td><td>창구 수기 대조 시간 <b>80% 감축</b></td></tr>
-                            <tr><td><b>2. 현장 실사</b></td><td>전수 현장실사 (건당 이동·실사 3시간)</td><td><b>업력 1년+·사전 컨설팅 기업 현장실사 면제</b></td><td>심사역 1인당 일 처리 역량 <b>12건 → 22건 확대</b></td></tr>
-                            <tr><td><b>3. 보증서 발급</b></td><td>접수 후 평균 15일 소요</td><td><b>약식심사 패스트트랙 (접수 후 3일 이내 발급)</b></td><td>민원 대기 해소 및 적기 자금 공급</td></tr>
-                        </tbody>
-                    </table>
-                `,
-                branch_notice: `
-                    <h1>[지점 시행 공문 초안] 비대면 패스트트랙 심사 지침 시달</h1>
-                    <p class="mt-2"><b>수신:</b> 각 지점장 및 보증심사역 전원</p>
-                    <p><b>제목:</b> 「${topic}」 시행에 따른 모바일 마이데이터 스크래핑 및 약식심사 적용 안내</p>
-                    <ul class="list-none pl-2 space-y-1 mt-2">
-                        <li>□ 지점 창구 혼잡도 완화 및 신속한 보증 공급을 위해 아래 요건 충족 기업에 대해 종이 서류 징구 및 현장실사를 면제하오니 즉시 시행 바랍니다.</li>
-                        <li>○ <b>적용대상:</b> 관내 업력 1년 이상 정상 영업 소상공인 중 재단 사전 컨설팅(자가진단 포함) 이수 기업</li>
-                        <li>○ <b>핵심조치:</b> 제출서류 당초 5종 → 1종(스크래핑 대체), 처리기한 당초 15일 → 3일 이내 단축</li>
-                    </ul>
+                    <h2>2. 보도자료 초안</h2>
+                    <p class="mt-2"><b>제목:</b> 서울신용보증재단, '${topic}' 150억 원 특례보증 시행… 모바일 비대면 심사로 3일 내 신속 지원</p>
                 `,
                 audit_qna: `
-                    <h1>[시의회 행정사무감사 & 본부 심의] 예상 공격 질의 및 방어 답변서 (Q&A)</h1>
-                    <div class="space-y-3 mt-2">
-                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                            <p class="font-bold text-rose-700">Q1. 자영업자 연체율이 상승하는 상황에서 보증을 확대하면 재단 대위변제율(현 4.8%)이 급증하는 것 아닌가?</p>
-                            <p class="mt-1"><b>▶ 모범 답변 (감사팀·운영팀 검증):</b> 단순 자금 살포가 아닌 ① <b>90% 부분보증</b>으로 협약은행에 10% 심사 책임을 분담시켰고, ② 일괄 5천만 원 대신 <b>1차 3,000만 원 분할 한도</b>로 초기 부실 노출액을 40% 축소했으며, ③ 3년 생존율이 42.1%에서 <b>74.5%(+32.4%p)로 상승하는 사전 경영컨설팅 이수 조건부</b>로 설계하여 예상 대위변제율을 <b>4.2% 이하</b>로 방어합니다.</p>
+                    <h1>[시의회 · 본부 감사 대응] 예상 질의 및 답변서 (Q&A)</h1>
+                    <div class="space-y-4 mt-3">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-border">
+                            <p class="font-bold text-rose-700">Q1. 자영업자 연체율이 상승하는 시점에 보증을 확대하면 재단 대위변제율(현 4.8%)이 급증하는 것 아닌가?</p>
+                            <p class="mt-2"><b>▶ 답변:</b> 단순 자금 공급이 아닌 ① <b>90% 부분보증</b>으로 협약은행에 10% 심사 책임을 분담시켰고, ② 일괄 5천만 원 대신 <b>1차 3,000만 원 분할 한도</b>로 초기 부실 노출액을 40% 축소했으며, ③ 3년 생존율이 42.1%에서 <b>74.5%로 상승하는 사전 경영컨설팅 이수 조건부</b>로 설계하여 예상 대위변제율을 <b>4.2% 이하</b>로 통제합니다.</p>
                         </div>
-                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-border">
                             <p class="font-bold text-rose-700">Q2. 지난 분기 예산 조기 고갈 우려로 기각된 안건과 무엇이 다른가?</p>
-                            <p class="mt-1"><b>▶ 모범 답변:</b> 무조건부 보증료 전면 면제를 폐지하고 <b>사전 원가개선 컨설팅 수료 기업에 한해 0.5%p 차등 감면</b>을 적용하여 도덕적 해이를 차단했으며, 동일 예산(150억 원) 내 수혜 대상을 <b>당초 300개사 → 최종 500개사로 66.7% 확대</b>했습니다.</p>
+                            <p class="mt-2"><b>▶ 답변:</b> 무조건부 보증료 전면 면제를 폐지하고 <b>사전 원가개선 컨설팅 수료 기업에 한해 0.5%p 차등 감면</b>을 적용하여 도덕적 해이를 차단했으며, 동일 예산(150억 원) 내 수혜 대상을 <b>당초 300개사 → 최종 500개사로 66.7% 확대</b>했습니다.</p>
                         </div>
                     </div>
                 `,
                 risk_fact_sheet: `
-                    <h1>[건전성·대위변제율 팩트 체크표] 리스크 통제 지표</h1>
+                    <h1>건전성 · 대위변제율 리스크 점검표</h1>
                     <table class="doc-table">
-                        <thead><tr><th>검증 지표</th><th>단순 100% 보증 시 (위험군)</th><th>본 대책 적용 시 (통제군)</th><th>방어 기제</th></tr></thead>
+                        <thead><tr><th>점검 지표</th><th>단순 100% 보증 시</th><th>본 대책 적용 시</th><th>핵심 방어 기제</th></tr></thead>
                         <tbody>
-                            <tr><td><b>예상 대위변제율</b></td><td>7.2% (기준선 4.8% 초과)</td><td><b>4.2% 이하 안정적 통제</b></td><td>90% 부분보증 + 중복수혜 사전 필터링</td></tr>
-                            <tr><td><b>초기 부실 노출액</b></td><td>업체당 5,000만 원 전액</td><td><b>업체당 2,700만 원 (1차 3천만×90%)</b></td><td>단계별 분할 보증한도제 적용</td></tr>
-                            <tr><td><b>지원기업 3년 생존율</b></td><td>42.1%</td><td><b>74.5% (+32.4%p)</b></td><td>사전 원가개선 컨설팅 의무 결합</td></tr>
+                            <tr><td><b>예상 대위변제율</b></td><td>7.2%</td><td><b>4.2% 이하</b></td><td>90% 부분보증 + 중복수혜 사전 차단</td></tr>
+                            <tr><td><b>초기 부실 노출액</b></td><td>업체당 5,000만 원</td><td><b>업체당 2,700만 원</b></td><td>1차 3,000만 원 분할 한도제</td></tr>
+                            <tr><td><b>지원기업 3년 생존율</b></td><td>42.1%</td><td><b>74.5% (+32.4%p)</b></td><td>사전 경영컨설팅 의무 결합</td></tr>
                         </tbody>
                     </table>
                 `,
-                trend_briefing: `
-                    <h1>[대내외 핵심 동향 브리핑 노트] ${topic}</h1>
-                    <h2>1. 외부 경제·언론 핵심 시그널 (출처: ai_news_briefing)</h2>
-                    <ul class="list-disc pl-4 space-y-1 mt-1">
-                        <li><b>영업이익 급감:</b> 고금리 장기화 및 배달플랫폼 중개수수료 인상(9.8%) 등으로 골목상권 외식업 실질 영업이익 전년 대비 <b>18.5% 감소</b>.</li>
-                        <li><b>건전성 관리 요구:</b> 다중채무 자영업자 연체율 상승에 따라 지역신보 평균 대위변제율이 <b>4.8%</b>를 기록, 선별적·자생력 연계 지원 필요성 대두.</li>
+                process_asis_tobe: `
+                    <h1>창구 업무절차 개선표 (As-Is → To-Be)</h1>
+                    <table class="doc-table">
+                        <thead><tr><th>심사 단계</th><th>현행 (As-Is)</th><th>개선 (To-Be)</th><th>개선 효과</th></tr></thead>
+                        <tbody>
+                            <tr><td><b>1. 서류 접수</b></td><td>지점 대면 제출 (종이 5종)</td><td><b>모바일 국세청·마이데이터 자동 스크래핑 (1종)</b></td><td>수기 대조 시간 <b>80% 감축</b></td></tr>
+                            <tr><td><b>2. 현장 실사</b></td><td>전수 현장실사</td><td><b>업력 1년+ · 사전 컨설팅 이수 기업 실사 면제</b></td><td>일 처리 역량 <b>12건 → 22건 확대</b></td></tr>
+                            <tr><td><b>3. 처리 기한</b></td><td>평균 15일 소요</td><td><b>약식심사 패스트트랙 (3일 이내 발급)</b></td><td>창구 대기 해소</td></tr>
+                        </tbody>
+                    </table>
+                `,
+                branch_notice: `
+                    <h1>[지점 시행 공문] 비대면 패스트트랙 심사 지침 시달</h1>
+                    <p class="mt-2"><b>수신:</b> 각 지점장 및 보증심사역</p>
+                    <p><b>제목:</b> 「${topic}」 시행에 따른 모바일 마이데이터 스크래핑 및 약식심사 적용 안내</p>
+                    <ul class="list-none pl-2 space-y-1.5 mt-3">
+                        <li>□ 지점 창구 혼잡도 완화 및 신속한 보증 공급을 위해 아래 요건 충족 기업에 대해 종이 서류 징구 및 현장실사를 면제합니다.</li>
+                        <li>○ <b>적용대상:</b> 관내 업력 1년 이상 정상 영업 소상공인 중 재단 사전 컨설팅 이수 기업</li>
+                        <li>○ <b>핵심조치:</b> 제출서류 당초 5종 → 1종(스크래핑 대체), 처리기한 당초 15일 → 3일 이내 단축</li>
                     </ul>
-                    <h2>2. 센터 내부 연계 시사점 (출처: meeting_copilot)</h2>
-                    <ul class="list-disc pl-4 space-y-1 mt-1">
-                        <li>센터 주간회의 지시("단발성 보증 지양·비금융 컨설팅 패키지화")에 발맞춰, 현재 72.0%인 센터 경영컨설팅 진도율을 우대보증과 연계해 100%로 끌어올리는 전략적 대응 권고.</li>
+                `,
+                trend_briefing: `
+                    <h1>[동향 브리핑 노트] ${topic}</h1>
+                    <h2>1. 외부 경제 · 언론 핵심 동향</h2>
+                    <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                        <li>고금리 장기화 및 배달플랫폼 중개수수료 인상(9.8%) 등으로 골목상권 외식업 실질 영업이익 전년 대비 <b>18.5% 감소</b>.</li>
+                        <li>다중채무 자영업자 연체율 상승에 따라 지역신보 평균 대위변제율이 <b>4.8%</b>를 기록하며 건전성 관리 중요성 부각.</li>
+                    </ul>
+                    <h2>2. 센터 내부 연계 시사점</h2>
+                    <ul class="list-disc pl-5 space-y-1.5 mt-2">
+                        <li>센터 주간회의 지시("단발성 보증 지양·비금융 컨설팅 패키지화")에 맞춰 현재 72.0%인 센터 경영컨설팅 진도율을 우대보증과 결합해 100%로 끌어올리는 대응 권고.</li>
                     </ul>
                 `
             };
-        }
-
-        // ═══════════ 9. 공통 유틸리티 ═══════════
-        async function pingRepos() {
-            const el = document.getElementById('headerRepoStatus');
-            el.textContent = '⏳ 레포 연결 확인중...';
-            try {
-                const resp = await fetch(NEWS_GAS_URL + '?t=' + Date.now());
-                if (resp.ok) {
-                    const data = await resp.json();
-                    if (Array.isArray(data)) {
-                        el.textContent = `● 뉴스비서(${data.length}건)·미팅코파일럿 Read-Only 연결됨`;
-                        return;
-                    }
-                }
-                el.textContent = '● 뉴스비서·미팅코파일럿 Read-Only 연결됨';
-            } catch (e) {
-                el.textContent = '● 뉴스비서·미팅코파일럿 Read-Only 연결됨';
-            }
-        }
-
-        function copyDocContent() {
-            const text = document.getElementById('dashboardDocViewer').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('📋 현재 산출물 내용이 클립보드에 복사되었습니다.');
-            });
         }
 
         function openGlobalKeyModal() {
@@ -1526,7 +1323,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderDashboard();
-            pingRepos();
         });
     </script>
 </body>
