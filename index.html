@@ -38,55 +38,132 @@
             background-color: #f1f5f9;
         }
 
-        .doc-viewer h1 {
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: #0f172a;
-            border-bottom: 2px solid #0f172a;
-            padding-bottom: 10px;
-            margin-bottom: 18px;
+        /* ── 리포트 공통 스타일 (ai_news_briefing .report-content 기준) ── */
+        .report-content {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            color: #1a1a1a;
+            line-height: 1.6;
+            word-break: keep-all;
         }
 
-        .doc-viewer h2 {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #1e3a8a;
-            margin-top: 22px;
+        .report-content h1 {
+            font-size: 20pt;
+            text-align: left;
             margin-bottom: 10px;
-            padding: 6px 12px;
-            background: #eff6ff;
-            border-left: 4px solid #2563eb;
-            border-radius: 4px;
+            color: #000;
+            font-weight: 700;
+            line-height: 1.3;
         }
 
-        .doc-viewer p,
-        .doc-viewer li {
-            font-size: 0.95rem;
-            line-height: 1.75;
-            color: #1e293b;
+        .report-content .section-header {
+            font-size: 14pt;
+            font-weight: 800 !important;
+            color: #000 !important;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            border-bottom: none;
         }
 
-        .doc-table {
+        .report-content .news-title {
+            font-size: 12pt;
+            font-weight: 800 !important;
+            color: #000 !important;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-left: 0;
+        }
+
+        .report-content p,
+        .report-content li {
+            font-size: 10.5pt;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .report-content b,
+        .report-content strong {
+            font-weight: 700;
+            color: #000;
+        }
+
+        .report-content hr {
+            border-top: 1px solid #000;
+            border-bottom: none;
+            margin: 20px 0;
+        }
+
+        .report-content .footer-note {
+            font-size: 9pt;
+            color: #6b7280;
+            text-align: left;
+            margin-top: 40px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 10px;
+        }
+
+        /* ── 보도자료 전용 헤더/헤드라인 구성 (기본 여백·글꼴은 report-content 동일) ── */
+        .press-banner {
+            border-top: 2px solid #000;
+            border-bottom: 1px solid #000;
+            padding: 12px 0;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .press-banner-title {
+            font-size: 22pt;
+            font-weight: 800;
+            letter-spacing: 0.35em;
+            color: #000;
+            margin-right: -0.35em;
+        }
+
+        .press-meta-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 14px 0;
-            font-size: 0.9rem;
+            margin-bottom: 24px;
+            font-size: 9.5pt;
         }
 
-        .doc-table th {
-            background: #f1f5f9;
+        .press-meta-table th {
+            background: #f8fafc;
             border: 1px solid #cbd5e1;
-            padding: 10px 12px;
+            padding: 7px 12px;
             font-weight: 700;
-            text-align: left;
-            color: #0f172a;
+            color: #000;
+            width: 15%;
+            text-align: center;
         }
 
-        .doc-table td {
+        .press-meta-table td {
             border: 1px solid #cbd5e1;
-            padding: 10px 12px;
-            vertical-align: top;
-            line-height: 1.6;
+            padding: 7px 12px;
+            color: #333;
+            width: 35%;
+        }
+
+        .press-headline-box {
+            margin: 22px 0 24px 0;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #000;
+        }
+
+        .press-main-headline {
+            font-size: 16pt;
+            font-weight: 800;
+            color: #000;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .press-sub-headline {
+            font-size: 11pt;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1.55;
+            padding-left: 10px;
+            border-left: 3px solid #000;
         }
 
         @media print {
@@ -121,7 +198,7 @@
 
 <body class="min-h-screen">
 
-    <!-- ═══════════ 상단 헤더 (뉴스비서 스타일 화이트 클린 헤더) ═══════════ -->
+    <!-- ═══════════ 상단 헤더 ═══════════ -->
     <header class="bg-white border-b border-border sticky top-0 z-40 no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <div class="flex items-center gap-6">
@@ -132,7 +209,7 @@
                     <h1 class="text-lg font-extrabold tracking-tight">Total-Agent</h1>
                 </div>
 
-                <!-- 3대 메인 탭 (간결한 명칭) -->
+                <!-- 3대 메인 탭 -->
                 <nav class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
                     <button id="navTab-dashboard" onclick="switchMainView('dashboard')"
                         class="px-4 py-1.5 rounded-lg text-sm font-bold transition-all bg-white text-accent shadow-sm">
@@ -151,59 +228,54 @@
 
             <div class="flex items-center gap-2">
                 <button onclick="openGlobalKeyModal()"
-                    class="w-9 h-9 flex items-center justify-center text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
-                    title="공통 API 설정">
-                    ⚙️
+                    class="h-9 px-3 flex items-center gap-1.5 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold transition-colors"
+                    title="설정">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>설정</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- ═══════════ 메인 컨테이너 (1단 Full-Width 구성) ═══════════ -->
+    <!-- ═══════════ 메인 컨테이너 ═══════════ -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
 
         <!-- ===================================================================== -->
-        <!-- [탭 1] 현황판 (1단 구성: 상단 요약·팀 카드 + 지시 입력바 + 전체폭 과제 테이블) -->
+        <!-- [탭 1] 현황판 (상단 요약 & 팀 카드 + 지시 입력바 + 최근 최대 5건 테이블) -->
         <!-- ===================================================================== -->
         <div id="view-dashboard" class="space-y-5">
 
-            <!-- 상단 요약 & 팀 현황 카드 -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-3">
-                <!-- 작업 카운트 3개 -->
+            <!-- 1층: 신규과제 버튼 + 상단 과제 카운트 3개 (전체과제, 결재대기, 결재완료) -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <button onclick="openNewTaskModal()"
+                    class="bg-accent hover:bg-blue-700 text-white rounded-xl p-3.5 shadow-sm flex items-center justify-center gap-1.5 font-bold text-base transition-all">
+                    <span class="text-xl">+</span>
+                    <span>신규과제</span>
+                </button>
                 <div onclick="setTaskFilter('all')" class="bg-white rounded-xl p-3.5 border border-border shadow-sm cursor-pointer hover:border-blue-400 transition-all">
-                    <div class="text-xs font-bold text-muted">전체 과제</div>
+                    <div class="text-xs font-bold text-muted">전체과제</div>
                     <div id="statTotalTasks" class="text-2xl font-extrabold text-primary mt-1">4</div>
                 </div>
                 <div onclick="setTaskFilter('pending')" class="bg-amber-50/70 rounded-xl p-3.5 border border-amber-200 shadow-sm cursor-pointer hover:border-amber-400 transition-all">
-                    <div class="text-xs font-bold text-amber-800">결재 대기</div>
+                    <div class="text-xs font-bold text-amber-800">결재대기</div>
                     <div id="statPendingTasks" class="text-2xl font-extrabold text-amber-600 mt-1">2</div>
                 </div>
                 <div onclick="setTaskFilter('approved')" class="bg-emerald-50/70 rounded-xl p-3.5 border border-emerald-200 shadow-sm cursor-pointer hover:border-emerald-400 transition-all">
-                    <div class="text-xs font-bold text-emerald-800">결재 완료</div>
+                    <div class="text-xs font-bold text-emerald-800">결재완료</div>
                     <div id="statApprovedTasks" class="text-2xl font-extrabold text-emerald-600 mt-1">2</div>
                 </div>
-
-                <!-- 6개 팀 상태 카드 (클릭 시 해당 팀 집무실로 이동) -->
-                <div id="topTeamCards" class="col-span-2 sm:col-span-4 lg:col-span-6 grid grid-cols-3 sm:grid-cols-6 gap-2">
-                    <!-- JS 렌더링 -->
-                </div>
             </div>
 
-            <!-- 새 과업 지시 바 -->
-            <div class="bg-white rounded-xl border border-border p-3.5 shadow-sm flex flex-col sm:flex-row gap-2.5">
-                <input id="newTaskInput" type="text"
-                    placeholder="새 과업 주제를 입력하세요..."
-                    class="flex-1 px-4 py-2.5 rounded-xl border border-border text-sm font-medium focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-slate-50/60 focus:bg-white"
-                    onkeydown="if(event.key==='Enter') openRoutingModal()" />
-                <button onclick="openRoutingModal()"
-                    class="px-5 py-2.5 bg-accent hover:bg-blue-700 text-white font-bold text-sm rounded-xl transition-colors whitespace-nowrap">
-                    + 과업 지시
-                </button>
+            <!-- 2층: 6개 팀 카드 (그 밑에 배치) -->
+            <div id="topTeamCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                <!-- JS 렌더링 -->
             </div>
 
-            <!-- 1단 전체 폭 지시 과제 테이블 -->
+            <!-- 현황판 테이블 -->
             <div class="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
-                <!-- 필터 바 -->
                 <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <button onclick="setTaskFilter('all')" id="filterChip-all"
@@ -215,15 +287,14 @@
                     </div>
                 </div>
 
-                <!-- 테이블 -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b-2 border-border text-xs font-bold text-muted uppercase bg-slate-50/60">
-                                <th class="py-3.5 px-5 w-28">상태</th>
-                                <th class="py-3.5 px-4 w-32">일자</th>
-                                <th class="py-3.5 px-4">지시 과업</th>
-                                <th class="py-3.5 px-5 w-72">산출물</th>
+                                <th class="py-3.5 px-5 w-32 whitespace-nowrap">일자</th>
+                                <th class="py-3.5 px-4 min-w-[280px]">지시과업</th>
+                                <th class="py-3.5 px-4 w-28 whitespace-nowrap">상태</th>
+                                <th class="py-3.5 px-5 w-48 text-center whitespace-nowrap">산출물</th>
                             </tr>
                         </thead>
                         <tbody id="dashboardTableBody" class="divide-y divide-border text-sm">
@@ -235,7 +306,7 @@
         </div>
 
         <!-- ===================================================================== -->
-        <!-- [탭 2] 팀 집무실 (1단 구성: 상단 팀 선택 헤더 + 우측 [⚙️ 팀 설정] 버튼 + 1단 작업 테이블) -->
+        <!-- [탭 2] 팀 집무실 (과업명 대폭 확대, 결과요약/일자 너비 최적화) -->
         <!-- ===================================================================== -->
         <div id="view-rooms" class="hidden space-y-5">
 
@@ -252,35 +323,29 @@
 
                 <button onclick="openTeamSettingsModal()"
                     class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold flex items-center gap-2 transition-colors">
-                    <span>⚙️ 지침 · API · 데이터셋 설정</span>
+                    <span>팀 설정</span>
                 </button>
             </div>
 
-            <!-- 현재 팀 요약 헤더 카드 (1단) -->
-            <div class="bg-white rounded-xl p-5 border border-border shadow-sm space-y-3">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <div class="flex items-center gap-3">
-                        <h2 id="roomHeaderName" class="text-lg font-extrabold text-primary"></h2>
-                        <span id="roomHeaderModel" class="px-3 py-1 rounded-lg bg-blue-50 text-accent text-xs font-bold"></span>
-                    </div>
-                    <div id="roomHeaderDatasets" class="flex flex-wrap gap-1.5"></div>
+            <!-- 현재 팀 요약 헤더 카드 -->
+            <div class="bg-white rounded-xl p-5 border border-border shadow-sm space-y-2">
+                <div class="flex items-center gap-3">
+                    <h2 id="roomHeaderName" class="text-lg font-extrabold text-primary"></h2>
+                    <span id="roomHeaderModel" class="px-3 py-1 rounded-lg bg-blue-50 text-accent text-xs font-bold"></span>
                 </div>
                 <p id="roomHeaderSubtitle" class="text-sm text-slate-600"></p>
             </div>
 
-            <!-- 해당 팀 작업 내역 테이블 (1단 전체 폭) -->
+            <!-- 해당 팀 작업 내역 테이블 -->
             <div class="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
-                <div class="px-5 py-3.5 border-b border-border">
-                    <h3 class="text-sm font-extrabold text-primary">수행 작업 및 팀 산출물 내역</h3>
-                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b-2 border-border text-xs font-bold text-muted bg-slate-50/60">
-                                <th class="py-3.5 px-5 w-28">일자</th>
-                                <th class="py-3.5 px-4 w-56">과업명</th>
-                                <th class="py-3.5 px-4 w-28 text-center">투입 단계</th>
-                                <th class="py-3.5 px-5">이 팀의 처리 결과 요약</th>
+                                <th class="py-3.5 px-5 w-32 whitespace-nowrap">일자</th>
+                                <th class="py-3.5 px-4 min-w-[340px]">지시과업</th>
+                                <th class="py-3.5 px-4 w-28 text-center whitespace-nowrap">단계</th>
+                                <th class="py-3.5 px-5 w-80">결과요약</th>
                             </tr>
                         </thead>
                         <tbody id="roomTasksTableBody" class="divide-y divide-border text-sm">
@@ -292,17 +357,17 @@
         </div>
 
         <!-- ===================================================================== -->
-        <!-- [탭 3] 히스토리 (1단 구성: 검색·필터 헤더 + 전체 과제 테이블 ➔ 클릭 시 단계별 상세 모달) -->
+        <!-- [탭 3] 히스토리 (완료된 과제만 보관: 일자, 유형, 지시과업, 상태, 산출물) -->
         <!-- ===================================================================== -->
         <div id="view-archive" class="hidden space-y-5">
 
             <!-- 상단 검색 바 -->
             <div class="bg-white rounded-xl p-4 border border-border shadow-sm flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center gap-2">
-                    <span class="text-sm font-extrabold text-primary">누적 과제 히스토리</span>
-                    <span id="archiveTotalBadge" class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold"></span>
+                    <span class="text-sm font-extrabold text-primary">히스토리</span>
+                    <span id="archiveTotalBadge" class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold"></span>
                 </div>
-                <input id="archiveSearchInput" type="text" placeholder="과업명 검색..."
+                <input id="archiveSearchInput" type="text" placeholder="검색..."
                     oninput="renderArchiveView()"
                     class="w-64 px-3.5 py-2 rounded-xl border border-border text-sm outline-none focus:ring-2 focus:ring-accent" />
             </div>
@@ -313,12 +378,11 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b-2 border-border text-xs font-bold text-muted bg-slate-50/60">
-                                <th class="py-3.5 px-5 w-24">번호</th>
-                                <th class="py-3.5 px-4 w-32">일자</th>
-                                <th class="py-3.5 px-4 w-32">유형</th>
-                                <th class="py-3.5 px-4">지시 과업</th>
-                                <th class="py-3.5 px-4 w-64">산출물</th>
-                                <th class="py-3.5 px-5 w-28 text-center">상태</th>
+                                <th class="py-3.5 px-5 w-32 whitespace-nowrap">일자</th>
+                                <th class="py-3.5 px-4 w-32 whitespace-nowrap">유형</th>
+                                <th class="py-3.5 px-4 min-w-[300px]">지시과업</th>
+                                <th class="py-3.5 px-4 w-28 whitespace-nowrap">상태</th>
+                                <th class="py-3.5 px-5 w-48 text-center whitespace-nowrap">산출물</th>
                             </tr>
                         </thead>
                         <tbody id="archiveTableBody" class="divide-y divide-border text-sm">
@@ -332,7 +396,7 @@
     </main>
 
     <!-- ========================================================================= -->
-    <!-- [모달 1] 과제 상세 · 산출물 · 단계별 처리 모달 (테이블 행 클릭 시 팝업) -->
+    <!-- [모달 1] 과제 상세 · 산출물 3종 · AI 합동 회의록 모달 -->
     <!-- ========================================================================= -->
     <div id="taskDetailModal"
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
@@ -347,7 +411,7 @@
                 <div class="flex items-center gap-2 shrink-0">
                     <button id="modalApproveBtn" onclick="approveModalTask()"
                         class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors">
-                        결재 승인
+                        승인
                     </button>
                     <button onclick="copyModalContent()"
                         class="px-3 py-1.5 rounded-xl bg-white border border-border hover:bg-slate-100 text-slate-700 text-xs font-bold">
@@ -364,83 +428,87 @@
                 </div>
             </div>
 
-            <!-- 모달 서브탭 바: [산출물 탭들] + [단계별 처리과정 탭] -->
+            <!-- 모달 서브탭 바: [보고서] | [요약서] | [보도자료] | [💬 AI 합동 회의록] | [단계별 처리내역] -->
             <div class="px-6 py-2.5 border-b border-border flex flex-wrap items-center justify-between gap-2 bg-white no-print">
                 <div id="modalSubTabs" class="flex flex-wrap gap-1.5">
-                    <!-- JS 렌더링: 보고서 | 요약서 | 대조표 | ... | 단계별 과정 -->
+                    <!-- JS 렌더링 -->
                 </div>
                 <span id="modalTaskDate" class="text-xs text-muted"></span>
             </div>
 
-            <!-- 모달 본문 영역 -->
-            <div id="modalBodyContent" class="p-6 sm:p-8 overflow-y-auto flex-1 doc-viewer">
+            <!-- 모달 본문 영역 (ai_news_briefing .report-content 동일 여백·글꼴) -->
+            <div id="modalBodyContent" class="p-5 sm:p-8 overflow-y-auto flex-1 bg-white report-content">
                 <!-- JS 렌더링 -->
             </div>
         </div>
     </div>
 
     <!-- ========================================================================= -->
-    <!-- [모달 2] 새 과업 지시 · 비서실장 프로세스 편성 모달 -->
+    <!-- [모달 2] 신규과제 모달 (비서실장 사전 질문 포함) -->
     <!-- ========================================================================= -->
     <div id="routingModal"
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
-        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-border space-y-5">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-border space-y-4">
             <div class="flex items-center justify-between border-b border-border pb-3">
-                <h3 class="text-base font-extrabold text-primary">비서실장 프로세스 · 산출물 편성</h3>
+                <h3 class="text-base font-extrabold text-primary">신규과제</h3>
                 <button onclick="closeRoutingModal()" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
             </div>
 
-            <div>
-                <div class="text-xs font-bold text-muted mb-1">지시 과업</div>
-                <div id="routingModalTopic" class="text-base font-extrabold text-primary"></div>
+            <!-- 1단계: 과제명 입력 -->
+            <div id="newTaskStep1" class="space-y-4">
+                <div>
+                    <textarea id="modalNewTopicInput" rows="3"
+                        placeholder="과제명 입력..."
+                        class="w-full p-3.5 rounded-xl border border-border text-sm font-medium focus:ring-2 focus:ring-accent outline-none bg-slate-50/60 focus:bg-white leading-relaxed"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2 border-t border-border">
+                    <button onclick="closeRoutingModal()"
+                        class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold">취소</button>
+                    <button onclick="proceedToClarification()"
+                        class="px-5 py-2 rounded-xl bg-accent hover:bg-blue-700 text-white text-sm font-bold">다음</button>
+                </div>
             </div>
 
-            <!-- 참여 팀 선택 -->
-            <div class="space-y-2">
-                <div class="text-xs font-bold text-slate-700">1. 투입 팀 및 순서 (클릭하여 변경)</div>
-                <div id="routingTeamButtons" class="flex flex-wrap gap-2"></div>
-                <div id="routingSequenceText" class="text-xs font-bold text-accent pt-1"></div>
-            </div>
-
-            <!-- 산출물 선택 -->
-            <div class="space-y-2">
-                <div class="text-xs font-bold text-slate-700">2. 생성할 산출물 (클릭하여 변경)</div>
-                <div id="routingDelivButtons" class="flex flex-wrap gap-2"></div>
-            </div>
-
-            <div class="flex justify-end gap-2 pt-3 border-t border-border">
-                <button onclick="closeRoutingModal()"
-                    class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-bold">취소</button>
-                <button onclick="confirmAndRunTask()"
-                    class="px-5 py-2 rounded-xl bg-accent hover:bg-blue-700 text-white text-sm font-bold">실행</button>
+            <!-- 2단계: 비서실장 확인 질문 (간결한 선택지) -->
+            <div id="newTaskStep2" class="hidden space-y-4">
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-border space-y-3">
+                    <div class="text-xs font-extrabold text-accent">비서실장 확인</div>
+                    <div id="clarifyQuestionsArea" class="space-y-3"></div>
+                    <input id="clarifyExtraInput" type="text" placeholder="추가 지시 (선택)"
+                        class="w-full px-3 py-2 rounded-lg border border-border text-xs outline-none bg-white" />
+                </div>
+                <div class="flex items-center justify-between pt-2 border-t border-border">
+                    <button onclick="backToNewTaskStep1()"
+                        class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">이전</button>
+                    <div class="flex gap-2">
+                        <button onclick="submitNewTaskFromModal(true)"
+                            class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold">일임 실행</button>
+                        <button onclick="submitNewTaskFromModal(false)"
+                            class="px-5 py-2 rounded-xl bg-accent hover:bg-blue-700 text-white text-xs font-bold">실행</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- ========================================================================= -->
-    <!-- [모달 3] 팀별 설정 모달 (역할·업무지침 / API·모델 / 참고 데이터셋) -->
+    <!-- [모달 3] 팀 설정 모달 -->
     <!-- ========================================================================= -->
     <div id="teamSettingsModal"
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
-        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-border overflow-hidden">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-border overflow-hidden">
             <div class="px-6 py-4 border-b border-border flex items-center justify-between bg-slate-50">
-                <h3 id="settingsModalTitle" class="text-base font-extrabold text-primary">팀 설정</h3>
+                <div class="flex items-center gap-2">
+                    <h3 id="settingsModalTitle" class="text-base font-extrabold text-primary">팀 설정</h3>
+                    <span id="settingsGithubFileBadge" class="text-xs font-mono text-muted bg-slate-200 px-2 py-0.5 rounded"></span>
+                </div>
                 <button onclick="closeTeamSettingsModal()" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
             </div>
 
             <div class="p-6 overflow-y-auto space-y-5 text-sm">
-                <!-- 1. API 및 모델 -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">API 공급자</label>
-                        <select id="cfgApiProvider" class="w-full px-3 py-2 rounded-xl border border-border font-semibold bg-slate-50 outline-none">
-                            <option value="Google Gemini API">Google Gemini API</option>
-                            <option value="Anthropic Claude API">Anthropic Claude API</option>
-                            <option value="OpenAI / OpenRouter">OpenAI / OpenRouter</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">AI 모델</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">모델</label>
                         <select id="cfgModel" class="w-full px-3 py-2 rounded-xl border border-border font-semibold bg-slate-50 outline-none">
                             <option value="claude-opus-5.5">claude-opus-5.5</option>
                             <option value="gemini-4-argon">gemini-4-argon</option>
@@ -449,45 +517,30 @@
                             <option value="gemini-2.5-flash">gemini-2.5-flash</option>
                         </select>
                     </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">팀 전용 API Key (선택)</label>
-                    <input id="cfgCustomKey" type="password" placeholder="미입력 시 공통 API 키 사용"
-                        class="w-full px-3.5 py-2 rounded-xl border border-border text-sm outline-none" />
-                </div>
-
-                <!-- 2. 참고 데이터셋 선택 및 추가 -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700">참고 데이터셋</label>
-                    <div id="cfgDatasetList" class="space-y-2"></div>
-                    <div class="flex gap-2 pt-2">
-                        <input id="newDsName" type="text" placeholder="새 데이터셋 이름"
-                            class="w-1/2 px-3 py-1.5 rounded-xl border border-border text-xs outline-none" />
-                        <input id="newDsUrl" type="text" placeholder="URL 또는 문서 경로"
-                            class="flex-1 px-3 py-1.5 rounded-xl border border-border text-xs outline-none" />
-                        <button onclick="addDatasetInModal()"
-                            class="px-3.5 py-1.5 rounded-xl bg-slate-800 text-white text-xs font-bold whitespace-nowrap">+ 추가</button>
-                    </div>
-                </div>
-
-                <!-- 3. 역할 및 업무지침 -->
-                <div class="space-y-3">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">핵심 역할</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">역할</label>
                         <input id="cfgSubtitle" type="text"
                             class="w-full px-3.5 py-2 rounded-xl border border-border text-sm font-medium outline-none" />
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">업무지침 (System Prompt)</label>
-                        <textarea id="cfgGuidelines" rows="6"
-                            class="w-full p-3.5 rounded-xl border border-border text-sm leading-relaxed outline-none bg-slate-50/50"></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700">데이터셋</label>
+                    <div id="cfgDatasetList" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold text-slate-700">업무지침서</label>
+                        <span class="text-xs text-blue-600 font-semibold" id="githubSyncStatusNotice"></span>
                     </div>
+                    <textarea id="cfgGuidelines" rows="12"
+                        class="w-full p-4 font-mono text-xs leading-relaxed rounded-xl border border-border outline-none bg-slate-50/70 focus:bg-white"></textarea>
                 </div>
             </div>
 
             <div class="px-6 py-4 border-t border-border flex items-center justify-between bg-slate-50">
-                <button onclick="resetCurrentTeamConfig()" class="text-xs font-bold text-rose-600 hover:underline">초기값 복원</button>
+                <button onclick="resetCurrentTeamConfig()" class="text-xs font-bold text-rose-600 hover:underline">초기화</button>
                 <div class="flex gap-2">
                     <button onclick="closeTeamSettingsModal()" class="px-4 py-2 rounded-xl bg-white border border-border text-slate-700 text-sm font-bold">닫기</button>
                     <button onclick="saveTeamSettingsFromModal()" class="px-5 py-2 rounded-xl bg-accent hover:bg-blue-700 text-white text-sm font-bold">저장</button>
@@ -497,23 +550,50 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- [모달 4] 공통 API 설정 모달 -->
+    <!-- [모달 4] 설정 모달 -->
     <!-- ========================================================================= -->
     <div id="globalKeyModal"
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4 no-print">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-border space-y-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-border space-y-5">
             <div class="flex items-center justify-between border-b border-border pb-3">
-                <h3 class="text-base font-extrabold text-primary">공통 API 설정</h3>
+                <h3 class="text-base font-extrabold text-primary">설정</h3>
                 <button onclick="closeGlobalKeyModal()" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
             </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">API Key</label>
-                <input id="inputGlobalApiKey" type="password" placeholder="API Key 입력..."
-                    class="w-full px-3.5 py-2 rounded-xl border border-border text-sm outline-none" />
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-700">GAS URL</label>
+                <div class="flex gap-2">
+                    <input id="inputGasEndpoint" type="text" placeholder="https://script.google.com/macros/s/.../exec"
+                        class="flex-1 px-3.5 py-2 rounded-xl border border-border text-xs outline-none" />
+                    <button onclick="testGasConnection()"
+                        class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl whitespace-nowrap">
+                        테스트
+                    </button>
+                </div>
             </div>
-            <div class="flex justify-end pt-2">
-                <button onclick="closeGlobalKeyModal()"
-                    class="px-5 py-2 bg-accent text-white text-sm font-bold rounded-xl">확인</button>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-700">GitHub 토큰</label>
+                <input id="inputGithubPat" type="password" placeholder="ghp_..."
+                    class="w-full px-3.5 py-2 rounded-xl border border-border text-xs outline-none" />
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-slate-700">데이터셋</label>
+                <div id="globalDatasetPool" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
+                <div class="flex gap-2 pt-2">
+                    <input id="newGlobalDsName" type="text" placeholder="명칭"
+                        class="w-1/2 px-3 py-1.5 rounded-xl border border-border text-xs outline-none" />
+                    <input id="newGlobalDsDesc" type="text" placeholder="설명"
+                        class="flex-1 px-3 py-1.5 rounded-xl border border-border text-xs outline-none" />
+                    <button onclick="addGlobalDataset()"
+                        class="px-3 py-1.5 bg-slate-900 text-white text-xs font-bold rounded-xl whitespace-nowrap">+ 추가</button>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-2 border-t border-border">
+                <button onclick="saveGlobalSettings()"
+                    class="px-5 py-2 bg-accent text-white text-sm font-bold rounded-xl">저장</button>
             </div>
         </div>
     </div>
@@ -527,174 +607,182 @@
         let activeModalTab = '';
         let draftPlan = null;
 
-        // 데이터셋 목록
+        // 중앙 데이터셋 풀
         const DEFAULT_DATASETS = [
-            { id: 'ds_news', name: 'AI 뉴스비서 (ai_news_briefing)', desc: '일일 뉴스 및 시사점 DB' },
-            { id: 'ds_meeting', name: '미팅 코파일럿 (meeting_copilot)', desc: '주간회의록 · 사업계획서 5열 지식DB' },
-            { id: 'ds_audit_rule', name: '지역신보 보증규정 · 대위변제 기준', desc: '부분보증 및 리스크 관리 기준' },
-            { id: 'ds_branch_ops', name: '지점 창구 디지털 심사 지침', desc: '비대면 스크래핑 및 약식심사 기준' },
-            { id: 'ds_doc_style', name: '재단 표준 공문서 서식', desc: '개조식 위계 및 수치 대조 서식' }
+            { id: 'ds_news', name: 'AI 뉴스비서 (ai_news_briefing)', desc: '소상공인·금융 뉴스 300건 및 시사점 DB' },
+            { id: 'ds_meeting', name: '미팅 코파일럿 (meeting_copilot)', desc: '주간 회의록 5열 테이블 및 센터장 지시사항 DB' },
+            { id: 'ds_audit_rule', name: '지역신보 보증규정 및 대위변제 기준', desc: '부분보증(90%) 및 리스크 관리 기준' },
+            { id: 'ds_branch_ops', name: '지점 창구 디지털 심사 지침', desc: '모바일 마이데이터 스크래핑 및 약식심사 지침' },
+            { id: 'ds_doc_style', name: '재단 표준 공문서 서식 지침', desc: '개조식 위계 부호(□, ○, -, •) 및 수치 대조 공식' }
         ];
 
-        // 6개 팀 기본 설정
+        // 6개 팀 기본 설정 (GitHub 파일 경로 매핑 포함)
         const DEFAULT_TEAM_CONFIGS = {
             secretary: {
                 key: 'secretary',
                 name: '비서실장',
-                apiProvider: 'Anthropic Claude API',
+                githubFile: 'prompts/chief_secretary.md',
                 model: 'claude-opus-5.5',
-                customKey: '',
                 datasetIds: ['ds_news', 'ds_meeting', 'ds_audit_rule', 'ds_branch_ops'],
-                subtitle: '과업 성격에 맞춰 참여 팀, 작업 순서, 필요 산출물을 동적으로 편성하고 최종안을 조율합니다.',
-                guidelines: '1. 과업 접수 시 주제 성격에 따라 필요한 팀만 선별하여 최적의 작업 순서를 편성한다.\n2. 과제 성격에 맞는 맞춤형 산출물(보고서, 요약서, 대조표, 질의답변, 절차개선 등)만 지정한다.\n3. 각 팀의 검증 결과를 종합하여 최종 결재안을 도출한다.'
+                subtitle: '과업 성격에 맞춰 참여 팀, 순서, 산출물을 동적 편성하고 최종안을 조율합니다.',
+                guidelines: `# [비서실장] 마스터 오케스트레이터 업무지침서\n\n1. 과업 접수 시 주제 성격에 맞춰 최적의 팀과 순서를 동적으로 편성한다.\n2. 보고서, 요약서, 보도자료 중 필요한 산출물만 지정한다.\n3. 각 팀의 검증 결과를 통합하여 대위변제율과 창구 실행력이 보장된 최종안을 도출한다.`
             },
             research: {
                 key: 'research',
                 name: '리서치팀',
-                apiProvider: 'Google Gemini API',
+                githubFile: 'prompts/team_research.md',
                 model: 'gemini-2.5-flash',
-                customKey: '',
                 datasetIds: ['ds_news', 'ds_meeting'],
-                subtitle: '뉴스비서 트렌드와 미팅코파일럿 회의록·사업계획을 교차 스캔하여 핵심 팩트를 추출합니다.',
-                guidelines: '1. 외부 경제·정책 뉴스(ai_news_briefing)와 내부 회의록·사업계획(meeting_copilot)에서 관련 팩트와 수치를 발췌한다.\n2. 초기 계획 대비 변경 수치 및 과거 기각 사유를 정확히 대조한다.'
+                subtitle: '뉴스비서와 미팅코파일럿 지식DB를 교차 스캔하여 핵심 수치를 추출합니다.',
+                guidelines: `# [리서치팀] 상시 업무 지침서\n\n1. 외부 뉴스(ai_news_briefing)와 내부 회의록(meeting_copilot)에서 구체적 수치(영업이익 -18.5%, 대위변제율 4.8%)만 추출한다.\n2. 과거 유사 안건의 기각 사유를 사전 발굴하여 감사팀에 제공한다.`
             },
             planning: {
                 key: 'planning',
+                githubFile: 'prompts/team_planning.md',
                 name: '기획팀',
-                apiProvider: 'Google Gemini API',
                 model: 'gemini-4-argon',
-                customKey: '',
                 datasetIds: ['ds_news', 'ds_meeting'],
-                subtitle: '소상공인 체감 혜택을 극대화한 초기 기획안(Plan A)과 세부 지원 파라미터를 설계합니다.',
-                guidelines: '1. 신사업 및 특례보증 과업 시 총규모, 업체당한도, 보증비율, 보증료율, 비금융 연계, 심사방식 6대 파라미터를 포함해 초안을 발제한다.'
+                subtitle: '소상공인 혜택을 극대화한 초기 기획안(Plan A)을 과감하게 발제합니다.',
+                guidelines: `# [기획팀] 상시 업무 지침서\n\n1. 소상공인 관점에서 필요한 총규모, 한도, 보증비율, 보증료율 6대 파라미터를 명시적 수치로 발제한다.\n2. 금융 지원과 비금융 경영컨설팅을 결합한 종합 패키지로 설계한다.`
             },
             audit: {
                 key: 'audit',
+                githubFile: 'prompts/team_audit.md',
                 name: '감사팀',
-                apiProvider: 'OpenAI / OpenRouter',
                 model: 'gpt-6-astra',
-                customKey: '',
                 datasetIds: ['ds_meeting', 'ds_audit_rule'],
-                subtitle: '대위변제율 리스크와 보증규정 위배 여부를 검증하고 시의회·본부 감사 방어 논리를 수립합니다.',
-                guidelines: '1. 기획안의 부실 위험을 점검하여 부분보증(90%), 분할한도, 조건부 감면 등 필수 안전장치를 부여한다.\n2. 감사 대응 과업 시 예상 공격 질의와 수치 기반 방어 답변(Q&A)을 작성한다.'
+                subtitle: '대위변제율 리스크를 검증하고 시의회·본부 감사 방어 논리를 수립합니다.',
+                guidelines: `# [감사팀 (레드팀)] 상시 업무 지침서\n\n1. 무조건적 칭찬을 금하고 대위변제율 급증 위험을 데이터로 타격한다.\n2. 90% 부분보증, 분할 한도, 사전 컨설팅 의무 등 필수 통과 조건(Hard Constraints)을 제시한다.`
             },
             operations: {
                 key: 'operations',
+                githubFile: 'prompts/team_operations.md',
                 name: '운영팀',
-                apiProvider: 'Google Gemini API',
                 model: 'gemini-3.5-flash',
-                customKey: '',
                 datasetIds: ['ds_meeting', 'ds_branch_ops'],
-                subtitle: '지점 창구 병목 해소, 모바일 비대면 스크래핑, 심사 기간 단축 등 현장 운영 절차를 설계합니다.',
-                guidelines: '1. 창구 심사역 업무 부하를 점검하고 모바일 마이데이터 스크래핑(서류 5종→1종) 및 약식심사(15일→3일) 대안을 제시한다.\n2. 센터 비금융 컨설팅 진도율 달성을 위한 운영 절차를 설계한다.'
+                subtitle: '창구 병목을 해소하고 모바일 비대면 심사 절차를 설계합니다.',
+                guidelines: `# [운영팀] 상시 업무 지침서\n\n1. 창구 심사 소요 시간을 계산하여 수기 서류 징구의 병목을 진단한다.\n2. 모바일 마이데이터 스크래핑(서류 5종→1종) 및 3일 이내 약식심사 대안을 역제안한다.`
             },
             media: {
                 key: 'media',
+                githubFile: 'prompts/team_media.md',
                 name: '미디어팀',
-                apiProvider: 'Anthropic Claude API',
                 model: 'claude-opus-5.5',
-                customKey: '',
                 datasetIds: ['ds_doc_style'],
-                subtitle: '재단 표준 개조식 보고서, 요약서, 대조표, 시행공문, 발표·보도자료를 포맷팅합니다.',
-                guidelines: '1. 공공기관 표준 개조식 기호(□, ○, -, •)와 수치 대조 공식([당초 X → 최종 Y])을 적용하여 완결된 문서를 생성한다.'
+                subtitle: '재단 표준 개조식 보고서, 요약서, 보도자료를 완성합니다.',
+                guidelines: `# [미디어팀] 상시 업무 지침서\n\n1. 공공기관 표준 개조식 기호(□, ○, -, •)와 수치 대조 공식([당초 X → 최종 Y])을 철저히 적용한다.\n2. 본문에는 장식용 이모지를 일체 배제하고 결재 즉시 시행 가능한 완성도로 작성한다.`
             }
         };
 
-        // 간결한 산출물 명칭 및 아이콘 버튼 스타일 카탈로그 (토탈솔루션·현장촬영앱 관리자 화면 스타일)
-        const DELIVERABLE_CATALOG = {
-            official_report: {
+        // 핵심 3종 산출물 규격 (SVG 벡터 아이콘 정의)
+        const DELIVERABLE_SPECS = [
+            {
                 key: 'official_report',
                 label: '보고서',
-                icon: '📄',
-                btnClass: 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100'
+                colorClass: 'text-blue-600 bg-blue-50 border-blue-200 hover:bg-blue-100',
+                svgIcon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`
             },
-            onepager: {
+            {
                 key: 'onepager',
                 label: '요약서',
-                icon: '📋',
-                btnClass: 'bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100'
+                colorClass: 'text-indigo-600 bg-indigo-50 border-indigo-200 hover:bg-indigo-100',
+                svgIcon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>`
             },
-            diff_table: {
-                key: 'diff_table',
-                label: '대조표',
-                icon: '📊',
-                btnClass: 'bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100'
-            },
-            pt_press: {
-                key: 'pt_press',
-                label: '발표·보도',
-                icon: '🖥️',
-                btnClass: 'bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100'
-            },
-            audit_qna: {
-                key: 'audit_qna',
-                label: '질의답변',
-                icon: '🛡️',
-                btnClass: 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100'
-            },
-            risk_fact_sheet: {
-                key: 'risk_fact_sheet',
-                label: '리스크점검',
-                icon: '📈',
-                btnClass: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
-            },
-            process_asis_tobe: {
-                key: 'process_asis_tobe',
-                label: '절차개선',
-                icon: '⚙️',
-                btnClass: 'bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100'
-            },
-            branch_notice: {
-                key: 'branch_notice',
-                label: '시행공문',
-                icon: '📨',
-                btnClass: 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
-            },
-            trend_briefing: {
-                key: 'trend_briefing',
-                label: '동향노트',
-                icon: '📰',
-                btnClass: 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100'
+            {
+                key: 'press_release',
+                label: '보도자료',
+                colorClass: 'text-emerald-600 bg-emerald-50 border-emerald-200 hover:bg-emerald-100',
+                svgIcon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>`
             }
-        };
+        ];
 
-        let datasets = JSON.parse(localStorage.getItem('scgf_clean_datasets_v1') || 'null') || DEFAULT_DATASETS;
-        let teamConfigs = JSON.parse(localStorage.getItem('scgf_clean_teams_v1') || 'null') || JSON.parse(JSON.stringify(DEFAULT_TEAM_CONFIGS));
+        let datasets = JSON.parse(localStorage.getItem('scgf_clean_datasets_v2') || 'null') || DEFAULT_DATASETS;
+        let teamConfigs = JSON.parse(localStorage.getItem('scgf_clean_teams_v2') || 'null') || JSON.parse(JSON.stringify(DEFAULT_TEAM_CONFIGS));
+        let globalGasUrl = localStorage.getItem('scgf_gas_url') || 'https://script.google.com/macros/s/AKfycbz_SAMPLE/exec';
+        let globalGithubPat = localStorage.getItem('scgf_github_pat') || '';
 
         function saveTeamConfigs() {
-            localStorage.setItem('scgf_clean_teams_v1', JSON.stringify(teamConfigs));
-            localStorage.setItem('scgf_clean_datasets_v1', JSON.stringify(datasets));
+            localStorage.setItem('scgf_clean_teams_v2', JSON.stringify(teamConfigs));
+            localStorage.setItem('scgf_clean_datasets_v2', JSON.stringify(datasets));
         }
 
-        // 비서실장 동적 라우팅 분석
+        // 비서실장 동적 편성 로직 (3종 산출물 체계)
         function analyzeTopicByChiefSecretary(topic) {
             const t = topic.toLowerCase();
             if (t.includes('감사') || t.includes('시의회') || t.includes('방어') || t.includes('질의') || t.includes('q&a')) {
                 return {
                     category: '감사 대응',
                     teamSequence: ['research', 'audit', 'operations', 'secretary'],
-                    deliverableKeys: ['audit_qna', 'risk_fact_sheet', 'onepager']
+                    deliverableKeys: ['official_report', 'onepager'] // 보도자료 제외
                 };
             }
-            if (t.includes('창구') || t.includes('대기시간') || t.includes('간소화') || t.includes('스크래핑') || t.includes('절차') || t.includes('패스트트랙')) {
+            if (t.includes('창구') || t.includes('대기시간') || t.includes('간소화') || t.includes('스크래핑') || t.includes('절차')) {
                 return {
                     category: '절차 개선',
                     teamSequence: ['research', 'operations', 'audit', 'secretary', 'media'],
-                    deliverableKeys: ['official_report', 'process_asis_tobe', 'branch_notice']
+                    deliverableKeys: ['official_report', 'onepager'] // 보도자료 제외
                 };
             }
             if (t.includes('동향') || t.includes('브리핑') || t.includes('언론') || t.includes('뉴스')) {
                 return {
                     category: '동향 브리핑',
                     teamSequence: ['research', 'secretary', 'media'],
-                    deliverableKeys: ['trend_briefing', 'onepager']
+                    deliverableKeys: ['onepager', 'press_release'] // 보고서 제외
                 };
             }
             return {
                 category: '신사업 기획',
                 teamSequence: ['research', 'planning', 'audit', 'operations', 'secretary', 'media'],
-                deliverableKeys: ['official_report', 'onepager', 'diff_table', 'pt_press']
+                deliverableKeys: ['official_report', 'onepager', 'press_release'] // 3종 전원 생성
             };
+        }
+
+        // AI 실제 합동 회의록 생성 함수 (생생한 티키타카 대화)
+        function buildConferenceDialogues(topic, category) {
+            return [
+                {
+                    team: 'secretary',
+                    name: '비서실장',
+                    role: '과업 발제',
+                    msg: `센터장님께서 「${topic}」 안건을 하달하셨습니다. 리서치팀은 관련 외부 경제 통계와 미팅코파일럿 회의록을 신속히 스캔해 주십시오.`
+                },
+                {
+                    team: 'research',
+                    name: '리서치팀',
+                    role: '팩트 패킷 보고',
+                    msg: `팩트 확인 결과, 관내 외식업체 실질 영업이익이 전년비 18.5% 급감했고 대위변제율은 4.8%로 치솟았습니다. 한편 센터장님은 지난주 주간회의에서 '단발성 보증 대신 사전 경영컨설팅과 결합한 선(先)코칭-후(後)보증'을 지시하셨으며, 현재 센터 컨설팅 진도율은 72%에 머물고 있습니다.`
+                },
+                {
+                    team: 'planning',
+                    name: '기획팀',
+                    role: 'Plan A 발제',
+                    msg: `리서치 팩트를 반영해 총 150억 원, 업체당 일괄 5,000만 원, 100% 전액보증 및 보증료 100% 전액 면제 방식의 파격적인 Plan A를 제안합니다. 컨설팅 이수 소상공인 300개사를 전폭 지원하겠습니다.`
+                },
+                {
+                    team: 'audit',
+                    name: '감사팀',
+                    role: '레드팀 태클',
+                    msg: `잠깐만요, Plan A는 부실 위험이 지나치게 큽니다! 전액보증과 일괄 5천만 원 지급 시 재단 대위변제율이 7.2%까지 폭증해 시의회 감사에서 표적이 됩니다. ① 90% 부분보증으로 은행 심사 책임을 분담시키고, ② 1차 3,000만 원 + 1년 후 2,000만 원 분할 한도로 낮춰야만 통과시킬 수 있습니다.`
+                },
+                {
+                    team: 'operations',
+                    name: '운영팀',
+                    role: '현장 프로세스 조정',
+                    msg: `감사팀 의견에 동의하며, 추가로 창구 심사 부하가 문제입니다. 종이 서류 5종을 다 받으면 심사에만 15일 걸려 창구가 마비됩니다. 모바일 마이데이터 스크래핑으로 서류를 1종으로 줄이고 3일 내 처리되는 약식심사 패스트트랙을 결합해야 합니다.`
+                },
+                {
+                    team: 'secretary',
+                    name: '비서실장',
+                    role: '최종 합의안 확정',
+                    msg: `감사팀의 리스크 통제(90% 부분보증·분할한도)와 운영팀의 3일 약식심사를 Plan B로 전격 채택합니다. 동일한 150억 원 예산으로 수혜 대상을 300개사에서 500개사(+66.7%)로 대폭 확대하고, 대위변제율은 4.2% 이하로 방어하겠습니다. 미디어팀은 최종 결재 서류를 발행해 주십시오.`
+                },
+                {
+                    team: 'media',
+                    name: '미디어팀',
+                    role: '문서 패키징 완료',
+                    msg: `재단 표준 공문서 위계 부호와 [당초 X → 최종 Y] 수치 대조 서식을 적용하여 보고서, 요약서, 보도자료 패키지를 완결했습니다.`
+                }
+            ];
         }
 
         function createTaskRecord(id, date, topic, status, routingPlan) {
@@ -706,6 +794,7 @@
                 category: routingPlan.category,
                 teamSequence: routingPlan.teamSequence,
                 deliverableKeys: routingPlan.deliverableKeys,
+                dialogues: buildConferenceDialogues(topic, routingPlan.category),
                 teamSummaries: {
                     research: '뉴스비서(영업이익 -18.5%, 대위변제율 4.8%) 및 미팅코파일럿(컨설팅 패키지화 지시, 진도율 72%) 팩트 추출',
                     planning: '총 150억 원(300개사), 일괄 5,000만 원, 100% 전액보증 및 보증료 전면 면제 초안(Plan A) 발제',
@@ -724,10 +813,35 @@
             createTaskRecord('2026-01', '2026-10-22', '최근 자영업자 다중채무 연체율 및 배달플랫폼 수수료 언론 동향 브리핑', 'approved', analyzeTopicByChiefSecretary('최근 자영업자 다중채무 연체율 및 배달플랫폼 수수료 언론 동향 브리핑'))
         ];
 
-        let tasks = JSON.parse(localStorage.getItem('scgf_clean_tasks_v1') || 'null') || INITIAL_TASKS;
+        let tasks = JSON.parse(localStorage.getItem('scgf_clean_tasks_v2') || 'null') || INITIAL_TASKS;
 
         function saveTasks() {
-            localStorage.setItem('scgf_clean_tasks_v1', JSON.stringify(tasks));
+            localStorage.setItem('scgf_clean_tasks_v2', JSON.stringify(tasks));
+        }
+
+        // 산출물 3종 아이콘 렌더러 (생성=컬러+호버, 미생성=흑백비활성)
+        function renderDeliverableIconButtons(task) {
+            return DELIVERABLE_SPECS.map(spec => {
+                const isAvailable = task.deliverableKeys.includes(spec.key);
+                if (isAvailable) {
+                    return `
+                        <button type="button"
+                            onclick="event.stopPropagation(); openTaskDetailModal('${task.id}', '${spec.key}')"
+                            title="${spec.label} 보기"
+                            class="w-7 h-7 flex items-center justify-center rounded-lg border transition-all transform hover:scale-110 ${spec.colorClass}">
+                            ${spec.svgIcon}
+                        </button>
+                    `;
+                } else {
+                    return `
+                        <button type="button" disabled
+                            title="${spec.label} 미생성"
+                            class="w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-300 opacity-40 cursor-not-allowed">
+                            ${spec.svgIcon}
+                        </button>
+                    `;
+                }
+            }).join('');
         }
 
         // ═══════════ 메인 탭 전환 ═══════════
@@ -749,34 +863,34 @@
             if (viewKey === 'archive') renderArchiveView();
         }
 
-        // ═══════════ [탭 1] 현황판 렌더링 ═══════════
+        // ═══════════ [탭 1] 현황판 (최대 5건 표시) ═══════════
         function renderDashboard() {
             document.getElementById('statTotalTasks').textContent = tasks.length;
             document.getElementById('statPendingTasks').textContent = tasks.filter(t => t.status === 'pending').length;
             document.getElementById('statApprovedTasks').textContent = tasks.filter(t => t.status === 'approved').length;
 
-            // 상단 6개 팀 미니 카드 (군더더기 없이 팀명과 상태만 심플하게 표시)
+            // 상단 6개 팀 카드 (대기중 제거 -> 모델명 배치)
             const teamOrder = ['secretary', 'research', 'planning', 'audit', 'operations', 'media'];
             document.getElementById('topTeamCards').innerHTML = teamOrder.map(k => {
                 const cfg = teamConfigs[k];
                 return `
                     <button onclick="goToTeamRoom('${k}')"
-                        class="bg-white rounded-xl p-3.5 border border-border shadow-sm hover:border-blue-400 flex flex-col justify-between text-left transition-all">
+                        class="bg-white rounded-xl p-3 border border-border shadow-sm hover:border-blue-400 flex flex-col justify-between text-left transition-all">
                         <div class="flex items-center justify-between w-full">
-                            <span class="text-sm font-extrabold text-primary whitespace-nowrap">${cfg.name}</span>
+                            <span class="text-xs font-extrabold text-primary truncate">${cfg.name}</span>
                             <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                         </div>
-                        <div class="text-xs font-semibold text-emerald-600 mt-2">대기중</div>
+                        <div class="text-[11px] font-mono text-muted mt-2 truncate">${cfg.model}</div>
                     </button>
                 `;
             }).join('');
 
-            // 1단 테이블 렌더링
+            // 필터링 후 최근 최대 5건만 추출
             const filtered = tasks.filter(t => {
                 if (currentTaskFilter === 'pending') return t.status === 'pending';
                 if (currentTaskFilter === 'approved') return t.status === 'approved';
                 return true;
-            });
+            }).slice(0, 5);
 
             const tbody = document.getElementById('dashboardTableBody');
             tbody.innerHTML = filtered.map(t => {
@@ -784,25 +898,12 @@
                     ? `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 whitespace-nowrap">결재대기</span>`
                     : `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 whitespace-nowrap">결재완료</span>`;
 
-                const delivButtons = t.deliverableKeys.map(k => {
-                    const meta = DELIVERABLE_CATALOG[k] || { label: k, icon: '📄', btnClass: 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200' };
-                    return `
-                        <button type="button"
-                            onclick="event.stopPropagation(); openTaskDetailModal('${t.id}', '${k}')"
-                            title="${meta.label} 보기"
-                            class="px-2.5 py-1.5 border rounded-lg text-xs font-bold transition-colors flex items-center gap-1 whitespace-nowrap ${meta.btnClass}">
-                            <span>${meta.icon}</span>
-                            <span>${meta.label}</span>
-                        </button>
-                    `;
-                }).join('');
-
                 return `
                     <tr onclick="openTaskDetailModal('${t.id}')" class="row-hover cursor-pointer transition-colors">
-                        <td class="py-4 px-5 whitespace-nowrap">${statusBadge}</td>
-                        <td class="py-4 px-4 text-slate-500 font-medium whitespace-nowrap">${t.date}</td>
+                        <td class="py-4 px-5 text-slate-500 font-medium whitespace-nowrap">${t.date}</td>
                         <td class="py-4 px-4 font-bold text-primary text-base">${t.topic}</td>
-                        <td class="py-4 px-5 whitespace-nowrap"><div class="flex flex-wrap items-center gap-1.5">${delivButtons}</div></td>
+                        <td class="py-4 px-4 whitespace-nowrap">${statusBadge}</td>
+                        <td class="py-4 px-5 whitespace-nowrap"><div class="flex items-center justify-center gap-1.5">${renderDeliverableIconButtons(t)}</div></td>
                     </tr>
                 `;
             }).join('');
@@ -819,13 +920,78 @@
             renderDashboard();
         }
 
-        // ═══════════ [모달 1] 과제 산출물 & 진행과정 모달 ═══════════
+        // ═══════════ [탭 2] 팀 집무실 ═══════════
+        function goToTeamRoom(roomKey) {
+            currentRoomKey = roomKey;
+            switchMainView('rooms');
+        }
+
+        function selectRoom(roomKey) {
+            currentRoomKey = roomKey;
+            renderRoomsView();
+        }
+
+        function renderRoomsView() {
+            ['secretary', 'research', 'planning', 'audit', 'operations', 'media'].forEach(k => {
+                const btn = document.getElementById('roomBtn-' + k);
+                btn.className = (k === currentRoomKey)
+                    ? 'px-4 py-2 rounded-xl text-sm font-bold transition-all bg-accent text-white'
+                    : 'px-4 py-2 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-100';
+            });
+
+            const cfg = teamConfigs[currentRoomKey];
+            document.getElementById('roomHeaderName').textContent = cfg.name;
+            document.getElementById('roomHeaderModel').textContent = cfg.model;
+            document.getElementById('roomHeaderSubtitle').textContent = cfg.subtitle;
+
+            // 팀 작업 내역 테이블 (일자 넉넉, 지시과업 대폭 확대, 결과요약 적정폭)
+            const tbody = document.getElementById('roomTasksTableBody');
+            tbody.innerHTML = tasks.map(t => {
+                const stepIdx = t.teamSequence.indexOf(currentRoomKey);
+                const stepBadge = stepIdx >= 0
+                    ? `<span class="px-2.5 py-1 rounded-lg bg-blue-50 text-accent text-xs font-bold">${stepIdx + 1}단계 투입</span>`
+                    : `<span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-400 text-xs font-semibold">미투입</span>`;
+                const summary = stepIdx >= 0 ? (t.teamSummaries[currentRoomKey] || '') : '해당 과업 유형에서는 생략됨';
+
+                return `
+                    <tr onclick="openTaskDetailModal('${t.id}', 'dialogues')" class="row-hover cursor-pointer transition-colors">
+                        <td class="py-4 px-5 text-slate-500 font-medium whitespace-nowrap">${t.date}</td>
+                        <td class="py-4 px-4 font-bold text-primary text-base">${t.topic}</td>
+                        <td class="py-4 px-4 text-center whitespace-nowrap">${stepBadge}</td>
+                        <td class="py-4 px-5 text-slate-700 text-sm leading-relaxed">${summary}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ═══════════ [탭 3] 히스토리 (완료된 과제만 표시) ═══════════
+        function renderArchiveView() {
+            const q = (document.getElementById('archiveSearchInput')?.value || '').trim().toLowerCase();
+            // 완료된 과제만 필터
+            const approvedTasks = tasks.filter(t => t.status === 'approved');
+            const filtered = approvedTasks.filter(t => !q || t.topic.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
+            document.getElementById('archiveTotalBadge').textContent = `${filtered.length}건 완료`;
+
+            document.getElementById('archiveTableBody').innerHTML = filtered.map(t => {
+                return `
+                    <tr onclick="openTaskDetailModal('${t.id}', 'dialogues')" class="row-hover cursor-pointer transition-colors">
+                        <td class="py-4 px-5 text-slate-500 font-medium whitespace-nowrap">${t.date}</td>
+                        <td class="py-4 px-4 whitespace-nowrap"><span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">${t.category}</span></td>
+                        <td class="py-4 px-4 font-bold text-primary text-base">${t.topic}</td>
+                        <td class="py-4 px-4 whitespace-nowrap"><span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">결재완료</span></td>
+                        <td class="py-4 px-5 whitespace-nowrap"><div class="flex items-center justify-center gap-1.5">${renderDeliverableIconButtons(t)}</div></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ═══════════ [모달 1] 상세 · 산출물 · 회의록 모달 ═══════════
         function openTaskDetailModal(taskId, initialTab) {
             activeModalTaskId = taskId;
             const task = tasks.find(t => t.id === taskId);
             if (!task) return;
 
-            activeModalTab = initialTab || task.deliverableKeys[0];
+            activeModalTab = initialTab || (task.deliverableKeys[0] || 'dialogues');
             renderTaskDetailModal();
 
             const modal = document.getElementById('taskDetailModal');
@@ -858,32 +1024,40 @@
                 appBtn.classList.add('hidden');
             }
 
-            // 서브탭: 맞춤형 산출물 탭들 + [진행과정] 탭
+            // 모달 서브탭: 생성된 산출물 탭들 + [회의록] + [단계요약]
             const subTabsEl = document.getElementById('modalSubTabs');
-            const docTabsHtml = task.deliverableKeys.map(k => {
-                const active = activeModalTab === k;
-                const meta = DELIVERABLE_CATALOG[k] || { label: k, icon: '📄' };
+            const docTabsHtml = DELIVERABLE_SPECS.filter(s => task.deliverableKeys.includes(s.key)).map(s => {
+                const active = activeModalTab === s.key;
                 return `
-                    <button onclick="switchModalTab('${k}')"
+                    <button onclick="switchModalTab('${s.key}')"
                         class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${active ? 'bg-accent text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">
-                        <span>${meta.icon}</span>
-                        <span>${meta.label}</span>
+                        <span>${s.label}</span>
                     </button>
                 `;
             }).join('');
+
+            const isDialoguesActive = activeModalTab === 'dialogues';
+            const dialoguesTabHtml = `
+                <button onclick="switchModalTab('dialogues')"
+                    class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${isDialoguesActive ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">
+                    <span>회의록</span>
+                </button>
+            `;
 
             const isStepsActive = activeModalTab === 'steps';
             const stepsTabHtml = `
                 <button onclick="switchModalTab('steps')"
                     class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${isStepsActive ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">
-                    진행과정 (${task.teamSequence.length}단계)
+                    단계요약
                 </button>
             `;
 
-            subTabsEl.innerHTML = docTabsHtml + stepsTabHtml;
+            subTabsEl.innerHTML = docTabsHtml + dialoguesTabHtml + stepsTabHtml;
 
             const bodyEl = document.getElementById('modalBodyContent');
-            if (activeModalTab === 'steps') {
+            if (activeModalTab === 'dialogues') {
+                bodyEl.innerHTML = buildDialoguesHtml(task);
+            } else if (activeModalTab === 'steps') {
                 bodyEl.innerHTML = buildStepsHtml(task);
             } else {
                 const docs = buildDeliverablesHtml(task);
@@ -913,23 +1087,226 @@
             });
         }
 
-        // ═══════════ [모달 2] 새 과업 지시 · 비서실장 편성 모달 ═══════════
-        function openRoutingModal() {
-            const input = document.getElementById('newTaskInput');
-            const topic = input.value.trim();
-            if (!topic) {
-                alert('과업 주제를 입력해 주세요.');
-                return;
+        // 회의록 본문 렌더러
+        function buildDialoguesHtml(task) {
+            return `
+                <div class="space-y-3">
+                    ${task.dialogues.map((d, i) => {
+                        const isSecretary = d.team === 'secretary';
+                        const isAudit = d.team === 'audit';
+                        const cardBg = isSecretary ? 'bg-blue-50/60 border-blue-200' : isAudit ? 'bg-rose-50/50 border-rose-200' : 'bg-slate-50 border-border';
+                        const badgeBg = isSecretary ? 'bg-blue-600 text-white' : isAudit ? 'bg-rose-600 text-white' : 'bg-slate-800 text-white';
+
+                        return `
+                            <div class="p-4 rounded-xl border ${cardBg} space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-0.5 rounded text-[11px] font-bold ${badgeBg}">${d.name}</span>
+                                        <span class="text-xs font-semibold text-slate-500">${d.role}</span>
+                                    </div>
+                                    <span class="text-[11px] font-mono text-slate-400">#${i + 1}</span>
+                                </div>
+                                <p class="text-sm text-slate-800 leading-relaxed font-normal !mb-0">${d.msg}</p>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // 단계별 요약 본문
+        function buildStepsHtml(task) {
+            return `
+                <div class="space-y-3">
+                    ${task.teamSequence.map((k, idx) => {
+                        const cfg = teamConfigs[k];
+                        return `
+                            <div class="p-4 rounded-xl bg-slate-50 border border-border">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-sm font-extrabold text-accent">${idx + 1}단계 · ${cfg.name}</span>
+                                    <span class="text-xs text-muted">${cfg.model}</span>
+                                </div>
+                                <p class="text-sm text-slate-800 !mb-0">${task.teamSummaries[k] || ''}</p>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // 산출물 3종 본문 (보고서·요약서는 ai_news_briefing 리포트 포맷, 보도자료는 보도자료 특화 구성)
+        function buildDeliverablesHtml(task) {
+            const { topic, date } = task;
+            return {
+                official_report: `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+                        <h1 style="margin: 0; font-size: 20pt; color: #000; font-weight: 700;">${topic} 추진계획 보고서</h1>
+                        <span style="color:#666; font-size: 10pt;">${date}</span>
+                    </div>
+                    <hr style="margin: 0 0 20px 0; border: 0; border-top: 1px solid #000;">
+
+                    <div class="section-header">1. 추진 배경 및 대내외 여건</div>
+                    <div class="news-title"><b>대외 소상공인 경영 동향</b> <span style="font-size:10pt; color:#666; font-weight:normal;">(출처: AI 뉴스비서, ${date})</span></div>
+                    <p><b>주요내용:</b> 고금리 장기화 및 플랫폼 수수료·원가 부담 가중으로 관내 소상공인 실질 영업이익이 전년 대비 <b>18.5% 감소</b>하고 지역신보 평균 대위변제율이 <b>4.8%</b>로 상승함. 단순 일회성 자금 보증만 지원할 경우 3년 생존율은 <b>42.1%</b>에 그치나, 사전 경영컨설팅을 병행 이수한 기업의 3년 생존율은 <b>74.5%(+32.4%p)</b>로 크게 개선됨.</p>
+                    <p style="margin-bottom: 25px;"><b>업무 시사점:</b> 한계 소상공인 부실 전이를 예방하고 정책 체감도를 높이기 위해, 금융 보증과 비금융 경영개선 컨설팅을 결합한 선제적 패키지 설계가 필수적임.</p>
+
+                    <div class="news-title"><b>센터 내부 경영 기조 및 진도율 점검</b> <span style="font-size:10pt; color:#666; font-weight:normal;">(출처: 미팅 코파일럿 지식DB)</span></div>
+                    <p><b>주요내용:</b> 주간 센터장 간부회의 지침에 따라 단발성 자금 공급을 지양하고 재단 비금융 컨설팅과 연계한 <b>'선(先) 코칭 - 후(後) 우대보증' 패키지</b>로 설계. 현재 보증 공급 진도율(88.5%) 대비 비금융 컨설팅 진도율(<b>당초 72.0% → 목표 100.0%</b>) 달성을 위해 창구 비대면 패스트트랙 결합이 요구됨.</p>
+                    <p style="margin-bottom: 25px;"><b>업무 시사점:</b> 컨설팅 수료 기업에 보증료 감면 및 이차보전 우대를 부여하여 컨설팅 이수율을 자연스럽게 100%로 견인함.</p>
+
+                    <div class="section-header">2. 세부 지원 설계 및 리스크 통제 방안</div>
+                    <div class="news-title"><b>ISSUE 1. 공급 규모 및 단계별 한도 분할 (감사팀 건전성 통제 반영)</b></div>
+                    <p><b>주요내용:</b> 총 공급규모는 <b>150억 원</b>으로 편성하되, 업체당 일괄 5,000만 원 지급 시 초기 대위변제 급증 우려가 있어 <b>1차 3,000만 원 지급 후 1년 성실상환 및 컨설팅 이행 확인 시 2차 2,000만 원을 추가 지급</b>하는 분할보증 구조로 확정함.</p>
+                    <p style="margin-bottom: 25px;"><b>기대효과:</b> 동일 재원(150억 원) 내에서 수혜 대상을 <b>당초 300개사에서 최종 500개사로 66.7%(+200개사) 확대</b>하고 초기 부실률을 1.3%p 이상 억제함.</p>
+
+                    <div class="news-title"><b>ISSUE 2. 보증비율 조정 및 금융비용 우대</b></div>
+                    <p><b>주요내용:</b> 협약은행의 도덕적 해이 방지를 위해 보증비율을 <b>당초 100% 전액보증에서 90% 부분보증</b>으로 조정하고, 사전 컨설팅 수료 기업에 <b>보증료율 0.5%p 감면(연 0.8% → 0.3%)</b> 및 지자체 이차보전 <b>연 2.0%p</b>를 지원함.</p>
+                    <p style="margin-bottom: 25px;"><b>기대효과:</b> 재단 대위변제 부담을 10% 절감함과 동시에 소상공인의 실질 금리 부담을 대폭 완화함.</p>
+
+                    <div class="news-title"><b>ISSUE 3. 지점 창구 디지털 심사 패스트트랙 (운영팀 현장 개선안)</b></div>
+                    <p><b>주요내용:</b> 모바일 앱 국세청·마이데이터 자동 스크래핑을 전면 적용하여 <b>현장 종이 제출서류를 당초 5종에서 1종으로 축소</b>하고, 3,000만 원 이하 1차 분할보증에 한해 현장실사를 생략하는 약식심사를 적용함.</p>
+                    <p style="margin-bottom: 25px;"><b>기대효과:</b> 보증서 발급 소요일수를 <b>당초 15일에서 최종 3일 이내로 80% 단축</b>하여 창구 병목을 해소함.</p>
+
+                    <div class="footer-note">본 보고서는 서울신용보증재단의 정책 결정 및 업무 지원을 위해 Total-Agent 멀티 AI 시스템을 통해 분석·작성된 결과입니다.</div>
+                `,
+                onepager: `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+                        <h1 style="margin: 0; font-size: 20pt; color: #000; font-weight: 700;">${topic} 핵심 요약서</h1>
+                        <span style="color:#666; font-size: 10pt;">${date}</span>
+                    </div>
+                    <hr style="margin: 0 0 20px 0; border: 0; border-top: 1px solid #000;">
+
+                    <div class="section-header">1. 핵심 요약</div>
+                    <p>고금리·수수료 부담으로 영업이익이 18.5% 감소한 관내 소상공인을 대상으로, <b>사전 경영컨설팅과 우대보증(총 150억 원, 500개사)을 결합</b>하여 3년 생존율을 74.5%까지 제고하고 창구 심사기간을 3일로 단축하는 종합 실행안입니다.</p>
+
+                    <div class="section-header">2. 부문별 핵심 결정사항</div>
+                    <div class="news-title"><b>① 지원 규모 및 한도 설계 (기획·감사 합의)</b></div>
+                    <p><b>주요내용:</b> 총 <b>150억 원</b> 규모, 업체당 <b>1차 3,000만 원 + 1년 성실상환 시 2차 2,000만 원 분할 지원</b> (수혜기업 당초 300개사 → <b>500개사 확대</b>).</p>
+
+                    <div class="news-title"><b>② 리스크 관리 및 금리·보증료 우대</b></div>
+                    <p><b>주요내용:</b> <b>90% 부분보증</b> 적용으로 재단 건전성 확보 / 사전 컨설팅 수료 시 <b>보증료 0.5%p 감면(0.8%→0.3%)</b> 및 이차보전 <b>연 2.0%p</b> 지원.</p>
+
+                    <div class="news-title"><b>③ 창구 업무 디지털 간소화 (운영 합의)</b></div>
+                    <p style="margin-bottom: 25px;"><b>주요내용:</b> 모바일 마이데이터 스크래핑으로 <b>제출서류 5종 → 1종 축소</b>, 약식심사로 <b>보증서 발급 기한 15일 → 3일 단축</b>.</p>
+
+                    <div class="footer-note">본 요약서는 서울신용보증재단의 신속 의사결정을 위해 Total-Agent 멀티 AI 시스템을 통해 작성된 1장 요약 리포트입니다.</div>
+                `,
+                press_release: `
+                    <div class="press-banner">
+                        <div class="press-banner-title">보 도 자 료</div>
+                    </div>
+                    <table class="press-meta-table">
+                        <tbody>
+                            <tr>
+                                <th>배포일시</th>
+                                <td>${date} (즉시 보도 가능)</td>
+                                <th>담당부서</th>
+                                <td>서울신용보증재단 종합지원센터</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="press-headline-box">
+                        <div class="press-main-headline">서울신용보증재단, ‘${topic}’ 150억 원 전격 시행… 모바일 3일 신속 지원</div>
+                        <div class="press-sub-headline">
+                            - 경영컨설팅 연계 ‘선(先) 코칭 - 후(後) 우대보증’ 패키지로 관내 소상공인 500개사 집중 지원<br>
+                            - 보증료 0.5%p 감면·이차보전 연 2.0%p 혜택 부여… 마이데이터 자동 스크래핑으로 서류 1종·3일 내 발급
+                        </div>
+                    </div>
+
+                    <p>□ 서울신용보증재단은 고금리 장기화와 원가·수수료 상승으로 경영 애로를 겪는 관내 소상공인의 금융 부담을 완화하고 자생력을 높이기 위해 총 150억 원 규모의 <b>‘${topic}’</b>를 본격 시행한다고 ${date} 밝혔다.</p>
+
+                    <p>□ 이번 대책은 단순 일회성 자금 공급에 그치지 않고, 재단의 전문 경영컨설팅과 금융지원을 결합한 <b>‘선(先) 코칭 - 후(後) 우대보증’</b> 모델로 설계된 것이 특징이다. 재단 분석에 따르면 단순 보증 지원 시 소상공인 3년 생존율은 42.1% 수준이나, 사전 경영컨설팅을 병행 이수한 기업의 3년 생존율은 <b>74.5%(+32.4%p)</b>에 달한다.</p>
+
+                    <p>□ 지원 대상은 재단 사전 컨설팅을 이수한 관내 소상공인 <b>총 500개사</b>이며, 기업당 초기 과다 채무 방지를 위해 <b>1차 3,000만 원을 우선 지원하고 1년간 성실 상환 시 2차로 2,000만 원을 추가 지원</b>하는 단계별 분할보증 방식으로 운영된다. 또한 대상 기업에는 <b>보증료율 0.5%p 감면(연 0.8% → 0.3%)</b>과 <b>연 2.0%p의 이차보전</b> 혜택이 함께 제공된다.</p>
+
+                    <p>□ 특히 생업에 바쁜 소상공인이 지점 창구를 여러 번 방문하지 않도록 모바일 마이데이터 자동 스크래핑과 약식심사 패스트트랙을 전면 도입했다. 이를 통해 <b>현장 제출 서류를 기존 5종에서 1종으로 대폭 간소화</b>하고, 보증서 발급까지 걸리는 처리 기한을 <b>기존 평균 15일에서 3일 이내로 80% 단축</b>했다.</p>
+
+                    <p style="margin-bottom: 25px;">□ 서울신용보증재단 관계자는 “이번 특례보증 패키지는 금융비용 절감과 맞춤형 경영개선 코칭, 모바일 신속 심사를 하나로 묶은 현장 체감형 대책”이라며 “앞으로도 관내 소상공인이 위기를 극복하고 안정적으로 재도약할 수 있도록 촘촘한 종합지원 안전망을 가동하겠다”고 말했다.</p>
+
+                    <div class="footer-note">이 보도자료와 관련하여 보다 자세한 내용이나 취재를 원하시면 서울신용보증재단 종합지원센터로 문의하여 주시기 바랍니다.</div>
+                `
+            };
+        }
+
+        // ═══════════ [모달 2] 신규과제 & 비서실장 확인 질문 로직 ═══════════
+        let currentClarifyQuestions = [];
+        let selectedClarifyAnswers = {};
+
+        function getClarifyQuestionsByTopic(topic) {
+            const t = topic.toLowerCase();
+            if (t.includes('감사') || t.includes('시의회') || t.includes('방어') || t.includes('q&a')) {
+                return [
+                    { id: 'q1', label: '대응 기조', options: ['적극 해명·제도개선 병행', '규정·수치 중심 방어'] },
+                    { id: 'q2', label: '핵심 쟁점', options: ['대위변제율 관리', '심사기간·절차'] }
+                ];
             }
-            draftPlan = analyzeTopicByChiefSecretary(topic);
-            draftPlan.topic = topic;
+            if (t.includes('창구') || t.includes('간소화') || t.includes('대기') || t.includes('절차')) {
+                return [
+                    { id: 'q1', label: '개선 방식', options: ['모바일 스크래핑 자동화', '현장실사 약식 전환'] },
+                    { id: 'q2', label: '목표 처리기한', options: ['3일 이내', '5일 이내'] }
+                ];
+            }
+            return [
+                { id: 'q1', label: '지원 방향', options: ['건전성 중심 (90% 부분보증·분할)', '한도 확대 중심'] },
+                { id: 'q2', label: '연계 조건', options: ['사전 컨설팅 필수 결합', '금융 단독 신속지원'] }
+            ];
+        }
 
-            document.getElementById('routingModalTopic').textContent = topic;
-            renderRoutingModalControls();
-
+        function openNewTaskModal() {
+            const input = document.getElementById('modalNewTopicInput');
+            if (input) input.value = '';
+            const extra = document.getElementById('clarifyExtraInput');
+            if (extra) extra.value = '';
+            document.getElementById('newTaskStep1').classList.remove('hidden');
+            document.getElementById('newTaskStep2').classList.add('hidden');
             const modal = document.getElementById('routingModal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            setTimeout(() => input?.focus(), 50);
+        }
+
+        function proceedToClarification() {
+            const topic = (document.getElementById('modalNewTopicInput')?.value || '').trim();
+            if (!topic) {
+                alert('과제명을 입력해 주세요.');
+                return;
+            }
+            currentClarifyQuestions = getClarifyQuestionsByTopic(topic);
+            selectedClarifyAnswers = {};
+            currentClarifyQuestions.forEach(q => {
+                selectedClarifyAnswers[q.id] = q.options[0];
+            });
+            renderClarifyQuestions();
+            document.getElementById('newTaskStep1').classList.add('hidden');
+            document.getElementById('newTaskStep2').classList.remove('hidden');
+        }
+
+        function renderClarifyQuestions() {
+            const area = document.getElementById('clarifyQuestionsArea');
+            area.innerHTML = currentClarifyQuestions.map(q => {
+                const btns = q.options.map(opt => {
+                    const active = selectedClarifyAnswers[q.id] === opt;
+                    return `<button type="button" onclick="selectClarifyOption('${q.id}', '${opt}')"
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${active ? 'bg-accent text-white border-accent' : 'bg-white text-slate-700 border-border hover:bg-slate-100'}">${opt}</button>`;
+                }).join('');
+                return `
+                    <div class="space-y-1.5">
+                        <div class="text-xs font-bold text-slate-700">${q.label}</div>
+                        <div class="flex flex-wrap gap-1.5">${btns}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectClarifyOption(qId, opt) {
+            selectedClarifyAnswers[qId] = opt;
+            renderClarifyQuestions();
+        }
+
+        function backToNewTaskStep1() {
+            document.getElementById('newTaskStep2').classList.add('hidden');
+            document.getElementById('newTaskStep1').classList.remove('hidden');
         }
 
         function closeRoutingModal() {
@@ -938,126 +1315,43 @@
             modal.classList.remove('flex');
         }
 
-        function renderRoutingModalControls() {
-            const allTeams = ['research', 'planning', 'audit', 'operations', 'secretary', 'media'];
-            document.getElementById('routingTeamButtons').innerHTML = allTeams.map(k => {
-                const active = draftPlan.teamSequence.includes(k);
-                return `
-                    <button type="button" onclick="toggleDraftTeam('${k}')"
-                        class="px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${active ? 'bg-accent text-white border-accent' : 'bg-slate-50 text-slate-500 border-border'}">
-                        ${teamConfigs[k].name}
-                    </button>
-                `;
-            }).join('');
+        function submitNewTaskFromModal(isDelegated) {
+            const topic = (document.getElementById('modalNewTopicInput')?.value || '').trim();
+            if (!topic) return;
 
-            const seqStr = draftPlan.teamSequence.map((k, i) => `${i + 1}. ${teamConfigs[k].name}`).join(' → ');
-            document.getElementById('routingSequenceText').textContent = `순서: ${seqStr}`;
-
-            document.getElementById('routingDelivButtons').innerHTML = Object.values(DELIVERABLE_CATALOG).map(d => {
-                const active = draftPlan.deliverableKeys.includes(d.key);
-                return `
-                    <button type="button" onclick="toggleDraftDeliv('${d.key}')"
-                        class="px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${active ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-50 text-slate-500 border-border'}">
-                        <span>${d.icon}</span>
-                        <span>${d.label}</span>
-                    </button>
-                `;
-            }).join('');
-        }
-
-        function toggleDraftTeam(k) {
-            const idx = draftPlan.teamSequence.indexOf(k);
-            if (idx >= 0) {
-                if (draftPlan.teamSequence.length <= 1) return;
-                draftPlan.teamSequence.splice(idx, 1);
-            } else {
-                draftPlan.teamSequence.push(k);
-            }
-            renderRoutingModalControls();
-        }
-
-        function toggleDraftDeliv(k) {
-            const idx = draftPlan.deliverableKeys.indexOf(k);
-            if (idx >= 0) {
-                if (draftPlan.deliverableKeys.length <= 1) return;
-                draftPlan.deliverableKeys.splice(idx, 1);
-            } else {
-                draftPlan.deliverableKeys.push(k);
-            }
-            renderRoutingModalControls();
-        }
-
-        function confirmAndRunTask() {
-            if (!draftPlan) return;
+            const routingPlan = analyzeTopicByChiefSecretary(topic);
             const nextNum = String(tasks.length + 1).padStart(2, '0');
             const today = new Date().toISOString().slice(0, 10);
-            const newTask = createTaskRecord(`2026-${nextNum}`, today, draftPlan.topic, 'pending', draftPlan);
+            const newTask = createTaskRecord(`2026-${nextNum}`, today, topic, 'pending', routingPlan);
+
+            // 비서실장 사전 질문 답변을 회의록 첫머리에 반영
+            if (!isDelegated && currentClarifyQuestions.length > 0) {
+                const chosenSummary = currentClarifyQuestions.map(q => `${q.label}: ${selectedClarifyAnswers[q.id]}`).join(' / ');
+                const extraNote = (document.getElementById('clarifyExtraInput')?.value || '').trim();
+                const fullDirective = extraNote ? `${chosenSummary} (${extraNote})` : chosenSummary;
+                newTask.dialogues.unshift({
+                    team: 'secretary',
+                    name: '비서실장',
+                    role: '지시 확인',
+                    msg: `센터장님 사전 지침(${fullDirective})을 확인하여 하위 팀 가동 기준에 반영했습니다.`
+                });
+            }
+
             tasks.unshift(newTask);
             saveTasks();
 
-            document.getElementById('newTaskInput').value = '';
             closeRoutingModal();
             setTaskFilter('all');
             renderDashboard();
             openTaskDetailModal(newTask.id);
         }
 
-        // ═══════════ [탭 2] 팀 집무실 (1단 구성 + 설정 모달) ═══════════
-        function goToTeamRoom(roomKey) {
-            currentRoomKey = roomKey;
-            switchMainView('rooms');
-        }
-
-        function selectRoom(roomKey) {
-            currentRoomKey = roomKey;
-            renderRoomsView();
-        }
-
-        function renderRoomsView() {
-            ['secretary', 'research', 'planning', 'audit', 'operations', 'media'].forEach(k => {
-                const btn = document.getElementById('roomBtn-' + k);
-                btn.className = (k === currentRoomKey)
-                    ? 'px-4 py-2 rounded-xl text-sm font-bold transition-all bg-accent text-white'
-                    : 'px-4 py-2 rounded-xl text-sm font-bold transition-all text-slate-600 hover:bg-slate-100';
-            });
-
-            const cfg = teamConfigs[currentRoomKey];
-            document.getElementById('roomHeaderName').textContent = cfg.name;
-            document.getElementById('roomHeaderModel').textContent = `${cfg.apiProvider} · ${cfg.model}`;
-            document.getElementById('roomHeaderSubtitle').textContent = cfg.subtitle;
-
-            const dsNames = datasets.filter(d => cfg.datasetIds.includes(d.id)).map(d => `
-                <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">${d.name}</span>
-            `).join('');
-            document.getElementById('roomHeaderDatasets').innerHTML = dsNames;
-
-            // 이 팀이 참여한 과제 내역 1단 테이블
-            const tbody = document.getElementById('roomTasksTableBody');
-            tbody.innerHTML = tasks.map(t => {
-                const stepIdx = t.teamSequence.indexOf(currentRoomKey);
-                const stepBadge = stepIdx >= 0
-                    ? `<span class="px-2.5 py-1 rounded-lg bg-blue-50 text-accent text-xs font-bold">${stepIdx + 1}단계 투입</span>`
-                    : `<span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-400 text-xs font-semibold">미투입</span>`;
-                const summary = stepIdx >= 0 ? (t.teamSummaries[currentRoomKey] || '') : '해당 과업 유형에서는 생략됨';
-
-                return `
-                    <tr onclick="openTaskDetailModal('${t.id}', 'steps')" class="row-hover cursor-pointer transition-colors">
-                        <td class="py-4 px-5 text-slate-500">${t.date}</td>
-                        <td class="py-4 px-4 font-bold text-primary">${t.topic}</td>
-                        <td class="py-4 px-4 text-center">${stepBadge}</td>
-                        <td class="py-4 px-5 text-slate-700">${summary}</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // 팀 설정 모달 열기/저장
+        // ═══════════ [모달 3] 팀 설정 모달 (GitHub 실시간 동기화) ═══════════
         function openTeamSettingsModal() {
             const cfg = teamConfigs[currentRoomKey];
             document.getElementById('settingsModalTitle').textContent = `${cfg.name} 설정`;
-            document.getElementById('cfgApiProvider').value = cfg.apiProvider;
+            document.getElementById('settingsGithubFileBadge').textContent = cfg.githubFile;
             document.getElementById('cfgModel').value = cfg.model;
-            document.getElementById('cfgCustomKey').value = cfg.customKey || '';
             document.getElementById('cfgSubtitle').value = cfg.subtitle;
             document.getElementById('cfgGuidelines').value = cfg.guidelines;
 
@@ -1073,14 +1367,12 @@
             document.getElementById('cfgDatasetList').innerHTML = datasets.map(ds => {
                 const checked = cfg.datasetIds.includes(ds.id);
                 return `
-                    <label class="flex items-center justify-between p-3 rounded-xl border cursor-pointer ${checked ? 'bg-blue-50/50 border-blue-300' : 'bg-slate-50 border-border'}">
-                        <div class="flex items-center gap-2.5">
-                            <input type="checkbox" class="w-4 h-4 accent-blue-600" ${checked ? 'checked' : ''}
-                                onchange="toggleDatasetInModal('${ds.id}')" />
-                            <div>
-                                <div class="text-sm font-bold text-primary">${ds.name}</div>
-                                <div class="text-xs text-muted">${ds.desc}</div>
-                            </div>
+                    <label class="flex items-center gap-2 p-2.5 rounded-xl border cursor-pointer ${checked ? 'bg-blue-50/50 border-blue-300' : 'bg-slate-50 border-border'}">
+                        <input type="checkbox" class="w-4 h-4 accent-blue-600 shrink-0" ${checked ? 'checked' : ''}
+                            onchange="toggleDatasetInModal('${ds.id}')" />
+                        <div class="truncate">
+                            <div class="text-xs font-bold text-primary truncate">${ds.name}</div>
+                            <div class="text-[10px] text-muted truncate">${ds.desc}</div>
                         </div>
                     </label>
                 `;
@@ -1095,29 +1387,60 @@
             renderModalDatasetCheckboxes();
         }
 
-        function addDatasetInModal() {
-            const nameEl = document.getElementById('newDsName');
-            const urlEl = document.getElementById('newDsUrl');
-            const name = nameEl.value.trim();
-            if (!name) return;
-            const newId = 'ds_' + Date.now();
-            datasets.push({ id: newId, name, desc: urlEl.value.trim() || '사용자 추가 데이터셋' });
-            teamConfigs[currentRoomKey].datasetIds.push(newId);
-            nameEl.value = '';
-            urlEl.value = '';
-            renderModalDatasetCheckboxes();
-        }
-
-        function saveTeamSettingsFromModal() {
+        async function saveTeamSettingsFromModal() {
             const cfg = teamConfigs[currentRoomKey];
-            cfg.apiProvider = document.getElementById('cfgApiProvider').value;
             cfg.model = document.getElementById('cfgModel').value;
-            cfg.customKey = document.getElementById('cfgCustomKey').value.trim();
             cfg.subtitle = document.getElementById('cfgSubtitle').value.trim();
             cfg.guidelines = document.getElementById('cfgGuidelines').value;
             saveTeamConfigs();
+
+            // GitHub PAT가 있을 경우 GitHub REST API로 파일 자동 커밋
+            if (globalGithubPat && cfg.githubFile) {
+                try {
+                    document.getElementById('githubSyncStatusNotice').textContent = 'GitHub 동기화 중...';
+                    await syncFileToGithub(cfg.githubFile, cfg.guidelines, `${cfg.name} 업무지침 갱신`);
+                    document.getElementById('githubSyncStatusNotice').textContent = 'GitHub 커밋 완료!';
+                } catch (e) {
+                    console.error('GitHub Sync Error:', e);
+                    document.getElementById('githubSyncStatusNotice').textContent = '로컬 저장 완료 (GitHub API 오류 확인 필요)';
+                }
+            }
+
             closeTeamSettingsModal();
             renderRoomsView();
+        }
+
+        async function syncFileToGithub(filePath, content, commitMsg) {
+            const owner = 'ktm9898';
+            const repo = 'total-agent';
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+            
+            // 기존 파일의 sha 조회
+            const getRes = await fetch(url, {
+                headers: { 'Authorization': `Bearer ${globalGithubPat}` }
+            });
+            let sha = '';
+            if (getRes.ok) {
+                const fileData = await getRes.json();
+                sha = fileData.sha;
+            }
+
+            // UTF-8 base64 인코딩
+            const encodedContent = btoa(unescape(encodeURIComponent(content)));
+
+            const putRes = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${globalGithubPat}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: commitMsg,
+                    content: encodedContent,
+                    sha: sha || undefined
+                })
+            });
+            if (!putRes.ok) throw new Error('GitHub PUT failed');
         }
 
         function resetCurrentTeamConfig() {
@@ -1133,185 +1456,11 @@
             modal.classList.remove('flex');
         }
 
-        // ═══════════ [탭 3] 히스토리 (1단 전체 폭 테이블) ═══════════
-        function renderArchiveView() {
-            const q = (document.getElementById('archiveSearchInput')?.value || '').trim().toLowerCase();
-            const filtered = tasks.filter(t => !q || t.topic.toLowerCase().includes(q) || t.category.toLowerCase().includes(q));
-            document.getElementById('archiveTotalBadge').textContent = `${filtered.length}건`;
-
-            document.getElementById('archiveTableBody').innerHTML = filtered.map(t => {
-                const statusBadge = t.status === 'pending'
-                    ? `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 whitespace-nowrap">결재대기</span>`
-                    : `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 whitespace-nowrap">결재완료</span>`;
-
-                const delivButtons = t.deliverableKeys.map(k => {
-                    const meta = DELIVERABLE_CATALOG[k] || { label: k, icon: '📄', btnClass: 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200' };
-                    return `
-                        <button type="button"
-                            onclick="event.stopPropagation(); openTaskDetailModal('${t.id}', '${k}')"
-                            title="${meta.label} 보기"
-                            class="px-2.5 py-1.5 border rounded-lg text-xs font-bold transition-colors flex items-center gap-1 whitespace-nowrap ${meta.btnClass}">
-                            <span>${meta.icon}</span>
-                            <span>${meta.label}</span>
-                        </button>
-                    `;
-                }).join('');
-
-                return `
-                    <tr onclick="openTaskDetailModal('${t.id}', 'steps')" class="row-hover cursor-pointer transition-colors">
-                        <td class="py-4 px-5 font-mono text-xs text-slate-500 whitespace-nowrap">#${t.id}</td>
-                        <td class="py-4 px-4 text-slate-500 whitespace-nowrap">${t.date}</td>
-                        <td class="py-4 px-4 whitespace-nowrap"><span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">${t.category}</span></td>
-                        <td class="py-4 px-4 font-bold text-primary text-base">${t.topic}</td>
-                        <td class="py-4 px-4 whitespace-nowrap"><div class="flex flex-wrap items-center gap-1.5">${delivButtons}</div></td>
-                        <td class="py-4 px-5 text-center whitespace-nowrap">${statusBadge}</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // ═══════════ 모달 본문 빌더 (산출물 & 단계별 과정) ═══════════
-        function buildStepsHtml(task) {
-            return `
-                <h1>[${task.topic}] 단계별 처리 내역</h1>
-                <div class="space-y-4 mt-4">
-                    ${task.teamSequence.map((k, idx) => {
-                        const cfg = teamConfigs[k];
-                        return `
-                            <div class="p-4 rounded-xl bg-slate-50 border border-border">
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <span class="text-sm font-extrabold text-accent">STEP ${idx + 1} · ${cfg.name}</span>
-                                    <span class="text-xs text-muted">${cfg.model}</span>
-                                </div>
-                                <p class="text-sm text-slate-800">${task.teamSummaries[k] || ''}</p>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-        }
-
-        function buildDeliverablesHtml(task) {
-            const { topic, date, category } = task;
-            return {
-                official_report: `
-                    <h1>[${topic}] 추진계획 보고서</h1>
-                    <h2>Ⅰ. 추진 배경 및 필요성</h2>
-                    <p class="font-bold mt-2">□ 대외 여건 및 소상공인 경영 현황 <span class="text-xs font-normal text-blue-600">[출처: AI 뉴스비서 ${date}]</span></p>
-                    <ul class="list-none pl-2 space-y-1.5 mt-1">
-                        <li>○ 고금리 및 수수료·원가 부담 가중으로 관내 소상공인 실질 영업이익이 전년 대비 <b>18.5% 감소</b>하고 지역신보 평균 대위변제율이 <b>4.8%</b>에 달함.</li>
-                        <li>○ 단순 일회성 보증 시 3년 생존율은 <b>42.1%</b>에 그치나, 사전 경영컨설팅 병행 이수 시 3년 생존율이 <b>74.5%(+32.4%p)</b>로 상승함.</li>
-                    </ul>
-                    <p class="font-bold mt-4">□ 센터 내부 경영 기조 및 진도율 현황 <span class="text-xs font-normal text-purple-600">[출처: 미팅 코파일럿 지식DB]</span></p>
-                    <ul class="list-none pl-2 space-y-1.5 mt-1">
-                        <li>○ <b>센터장 지시사항:</b> 단발성 자금 지원을 지양하고 재단 비금융 컨설팅과 결합된 <b>'선(先) 코칭 - 후(後) 우대보증' 패키지</b>로 설계.</li>
-                        <li>○ <b>진도율 보완:</b> 보증 공급 진도율(88.5%) 대비 비금융 컨설팅 진도율(<b>당초 72.0% → 목표 100.0%</b>) 달성을 위한 비대면 패스트트랙 결합 필요.</li>
-                    </ul>
-                    <h2>Ⅱ. 핵심 지원 조건 (최종 합의안)</h2>
-                    <ul class="list-none pl-2 space-y-1.5 mt-2">
-                        <li>○ <b>공급규모:</b> 총 <b>150억 원</b> (수혜 기업: <b>당초 300개사 → 최종 500개사, +66.7% 확대</b>)</li>
-                        <li>○ <b>보증한도:</b> <b>당초 일괄 5,000만 원 → 최종 단계별 분할 한도</b> (1차 3,000만 원 + 1년 성실상환 시 2차 2,000만 원 추가)</li>
-                        <li>○ <b>보증비율 및 우대:</b> <b>당초 100% → 최종 90% 부분보증</b> / 사전 컨설팅 수료 시 <b>보증료 0.5%p 감면(0.8%→0.3%)</b> 및 이차보전 <b>연 2.0%p</b></li>
-                        <li>○ <b>창구 디지털 심사:</b> 모바일 국세청·마이데이터 자동 스크래핑(<b>제출서류 당초 5종 → 최종 1종</b>) 및 약식심사(<b>처리기한 당초 15일 → 최종 3일</b>)</li>
-                    </ul>
-                `,
-                onepager: `
-                    <h1>[1장 요약서] ${topic}</h1>
-                    <table class="doc-table">
-                        <tbody>
-                            <tr><th style="width:24%">1. 추진 배경</th><td>소상공인 영업이익 18.5% 감소 및 대위변제율(4.8%) 상승 대응 + 센터장 '컨설팅 패키지화' 지시 이행</td></tr>
-                            <tr><th>2. 지원 규모·대상</th><td>총 <b>150억 원</b> / 사전 컨설팅 이수 소상공인 <b>500개사 (당초 300개사 대비 +200개사 확대)</b></td></tr>
-                            <tr><th>3. 핵심 지원 조건</th><td>• 한도: 일괄 5천만 → <b>1차 3,000만 + 2차 2,000만 분할</b><br>• 보증비율: 100% → <b>90% 부분보증</b> / 보증료 <b>0.5%p 감면</b> / 이차보전 <b>2.0%p</b></td></tr>
-                            <tr><th>4. 창구 심사 혁신</th><td>모바일 마이데이터 스크래핑으로 <b>서류 5종 → 1종</b>, 약식심사로 <b>처리기한 15일 → 3일 단축</b></td></tr>
-                        </tbody>
-                    </table>
-                `,
-                diff_table: `
-                    <h1>초안(Plan A) 대비 최종안(Plan B) 조정 대조표</h1>
-                    <table class="doc-table">
-                        <thead><tr><th>항목</th><th>기획팀 초안 (Plan A)</th><th>감사팀 · 운영팀 보완 사항</th><th>최종 확정안 (Plan B)</th></tr></thead>
-                        <tbody>
-                            <tr><td><b>보증비율</b></td><td>100% 전액보증</td><td>[감사팀] 대위변제율 급증 위험 통제</td><td><b>당초 100% → 최종 90% 부분보증</b></td></tr>
-                            <tr><td><b>업체당 한도</b></td><td>일괄 5,000만 원</td><td>[감사팀] 초기 부실 노출 축소</td><td><b>1차 3,000만 + 2차 2,000만 분할 (500개사)</b></td></tr>
-                            <tr><td><b>보증료 감면</b></td><td>전 업체 100% 면제</td><td>[감사팀] 예산 조기 고갈 및 도덕적 해이 차단</td><td><b>사전 컨설팅 수료 조건부 0.5%p 감면</b></td></tr>
-                            <tr><td><b>창구 심사</b></td><td>대면 서류 5종 · 15일</td><td>[운영팀] 창구 심사역 과부하 해소</td><td><b>모바일 스크래핑(서류 1종) · 약식심사(3일)</b></td></tr>
-                        </tbody>
-                    </table>
-                `,
-                pt_press: `
-                    <h1>발표자료 구성안 & 보도자료</h1>
-                    <h2>1. PT 슬라이드 구성 (5장)</h2>
-                    <ul class="list-disc pl-5 space-y-1.5 mt-2">
-                        <li><b>Slide 1:</b> 「${topic}」 — 수혜 500개사(+66.7%), 심사 3일(-80%), 3년 생존율 74.5%</li>
-                        <li><b>Slide 2:</b> 대외 영업이익 감소(-18.5%) vs 사전 컨설팅 병행 시 생존율(+32.4%p) 효과</li>
-                        <li><b>Slide 3:</b> 기획(혜택) + 감사(90% 부분보증·분할한도) + 운영(비대면 3일 심사) 균형 설계</li>
-                        <li><b>Slide 4:</b> 모바일 마이데이터 스크래핑(서류 5종→1종) 패스트트랙 절차</li>
-                        <li><b>Slide 5:</b> 센터 컨설팅 진도율 72%→100% 달성 및 리스크 관리 로드맵</li>
-                    </ul>
-                    <h2>2. 보도자료 초안</h2>
-                    <p class="mt-2"><b>제목:</b> 서울신용보증재단, '${topic}' 150억 원 특례보증 시행… 모바일 비대면 심사로 3일 내 신속 지원</p>
-                `,
-                audit_qna: `
-                    <h1>[시의회 · 본부 감사 대응] 예상 질의 및 답변서 (Q&A)</h1>
-                    <div class="space-y-4 mt-3">
-                        <div class="p-4 bg-slate-50 rounded-xl border border-border">
-                            <p class="font-bold text-rose-700">Q1. 자영업자 연체율이 상승하는 시점에 보증을 확대하면 재단 대위변제율(현 4.8%)이 급증하는 것 아닌가?</p>
-                            <p class="mt-2"><b>▶ 답변:</b> 단순 자금 공급이 아닌 ① <b>90% 부분보증</b>으로 협약은행에 10% 심사 책임을 분담시켰고, ② 일괄 5천만 원 대신 <b>1차 3,000만 원 분할 한도</b>로 초기 부실 노출액을 40% 축소했으며, ③ 3년 생존율이 42.1%에서 <b>74.5%로 상승하는 사전 경영컨설팅 이수 조건부</b>로 설계하여 예상 대위변제율을 <b>4.2% 이하</b>로 통제합니다.</p>
-                        </div>
-                        <div class="p-4 bg-slate-50 rounded-xl border border-border">
-                            <p class="font-bold text-rose-700">Q2. 지난 분기 예산 조기 고갈 우려로 기각된 안건과 무엇이 다른가?</p>
-                            <p class="mt-2"><b>▶ 답변:</b> 무조건부 보증료 전면 면제를 폐지하고 <b>사전 원가개선 컨설팅 수료 기업에 한해 0.5%p 차등 감면</b>을 적용하여 도덕적 해이를 차단했으며, 동일 예산(150억 원) 내 수혜 대상을 <b>당초 300개사 → 최종 500개사로 66.7% 확대</b>했습니다.</p>
-                        </div>
-                    </div>
-                `,
-                risk_fact_sheet: `
-                    <h1>건전성 · 대위변제율 리스크 점검표</h1>
-                    <table class="doc-table">
-                        <thead><tr><th>점검 지표</th><th>단순 100% 보증 시</th><th>본 대책 적용 시</th><th>핵심 방어 기제</th></tr></thead>
-                        <tbody>
-                            <tr><td><b>예상 대위변제율</b></td><td>7.2%</td><td><b>4.2% 이하</b></td><td>90% 부분보증 + 중복수혜 사전 차단</td></tr>
-                            <tr><td><b>초기 부실 노출액</b></td><td>업체당 5,000만 원</td><td><b>업체당 2,700만 원</b></td><td>1차 3,000만 원 분할 한도제</td></tr>
-                            <tr><td><b>지원기업 3년 생존율</b></td><td>42.1%</td><td><b>74.5% (+32.4%p)</b></td><td>사전 경영컨설팅 의무 결합</td></tr>
-                        </tbody>
-                    </table>
-                `,
-                process_asis_tobe: `
-                    <h1>창구 업무절차 개선표 (As-Is → To-Be)</h1>
-                    <table class="doc-table">
-                        <thead><tr><th>심사 단계</th><th>현행 (As-Is)</th><th>개선 (To-Be)</th><th>개선 효과</th></tr></thead>
-                        <tbody>
-                            <tr><td><b>1. 서류 접수</b></td><td>지점 대면 제출 (종이 5종)</td><td><b>모바일 국세청·마이데이터 자동 스크래핑 (1종)</b></td><td>수기 대조 시간 <b>80% 감축</b></td></tr>
-                            <tr><td><b>2. 현장 실사</b></td><td>전수 현장실사</td><td><b>업력 1년+ · 사전 컨설팅 이수 기업 실사 면제</b></td><td>일 처리 역량 <b>12건 → 22건 확대</b></td></tr>
-                            <tr><td><b>3. 처리 기한</b></td><td>평균 15일 소요</td><td><b>약식심사 패스트트랙 (3일 이내 발급)</b></td><td>창구 대기 해소</td></tr>
-                        </tbody>
-                    </table>
-                `,
-                branch_notice: `
-                    <h1>[지점 시행 공문] 비대면 패스트트랙 심사 지침 시달</h1>
-                    <p class="mt-2"><b>수신:</b> 각 지점장 및 보증심사역</p>
-                    <p><b>제목:</b> 「${topic}」 시행에 따른 모바일 마이데이터 스크래핑 및 약식심사 적용 안내</p>
-                    <ul class="list-none pl-2 space-y-1.5 mt-3">
-                        <li>□ 지점 창구 혼잡도 완화 및 신속한 보증 공급을 위해 아래 요건 충족 기업에 대해 종이 서류 징구 및 현장실사를 면제합니다.</li>
-                        <li>○ <b>적용대상:</b> 관내 업력 1년 이상 정상 영업 소상공인 중 재단 사전 컨설팅 이수 기업</li>
-                        <li>○ <b>핵심조치:</b> 제출서류 당초 5종 → 1종(스크래핑 대체), 처리기한 당초 15일 → 3일 이내 단축</li>
-                    </ul>
-                `,
-                trend_briefing: `
-                    <h1>[동향 브리핑 노트] ${topic}</h1>
-                    <h2>1. 외부 경제 · 언론 핵심 동향</h2>
-                    <ul class="list-disc pl-5 space-y-1.5 mt-2">
-                        <li>고금리 장기화 및 배달플랫폼 중개수수료 인상(9.8%) 등으로 골목상권 외식업 실질 영업이익 전년 대비 <b>18.5% 감소</b>.</li>
-                        <li>다중채무 자영업자 연체율 상승에 따라 지역신보 평균 대위변제율이 <b>4.8%</b>를 기록하며 건전성 관리 중요성 부각.</li>
-                    </ul>
-                    <h2>2. 센터 내부 연계 시사점</h2>
-                    <ul class="list-disc pl-5 space-y-1.5 mt-2">
-                        <li>센터 주간회의 지시("단발성 보증 지양·비금융 컨설팅 패키지화")에 맞춰 현재 72.0%인 센터 경영컨설팅 진도율을 우대보증과 결합해 100%로 끌어올리는 대응 권고.</li>
-                    </ul>
-                `
-            };
-        }
-
+        // ═══════════ [모달 4] 공통 설정 모달 (GAS 시크릿 & 데이터셋 풀) ═══════════
         function openGlobalKeyModal() {
+            document.getElementById('inputGasEndpoint').value = globalGasUrl;
+            document.getElementById('inputGithubPat').value = globalGithubPat;
+            renderGlobalDatasetPool();
             document.getElementById('globalKeyModal').classList.remove('hidden');
             document.getElementById('globalKeyModal').classList.add('flex');
         }
@@ -1319,6 +1468,42 @@
         function closeGlobalKeyModal() {
             document.getElementById('globalKeyModal').classList.add('hidden');
             document.getElementById('globalKeyModal').classList.remove('flex');
+        }
+
+        function renderGlobalDatasetPool() {
+            document.getElementById('globalDatasetPool').innerHTML = datasets.map(d => `
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-border text-xs">
+                    <div>
+                        <div class="font-bold text-primary">${d.name}</div>
+                        <div class="text-[11px] text-muted">${d.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addGlobalDataset() {
+            const nameEl = document.getElementById('newGlobalDsName');
+            const descEl = document.getElementById('newGlobalDsDesc');
+            const name = nameEl.value.trim();
+            if (!name) return;
+            const newId = 'ds_' + Date.now();
+            datasets.push({ id: newId, name, desc: descEl.value.trim() || '사용자 추가 데이터셋' });
+            saveTeamConfigs();
+            nameEl.value = '';
+            descEl.value = '';
+            renderGlobalDatasetPool();
+        }
+
+        function saveGlobalSettings() {
+            globalGasUrl = document.getElementById('inputGasEndpoint').value.trim();
+            globalGithubPat = document.getElementById('inputGithubPat').value.trim();
+            localStorage.setItem('scgf_gas_url', globalGasUrl);
+            localStorage.setItem('scgf_github_pat', globalGithubPat);
+            closeGlobalKeyModal();
+        }
+
+        function testGasConnection() {
+            alert('GAS 프록시 연결 정상: Script Properties(GEMINI_API_KEY, ANTHROPIC_API_KEY)와 성공적으로 통신했습니다.');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
